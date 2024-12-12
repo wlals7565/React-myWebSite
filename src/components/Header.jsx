@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStackOverflow } from "@fortawesome/free-brands-svg-icons";
+import { Link } from "react-router";
 
 const StyledHeader = styled.header`
   background-color: #393939;
@@ -10,7 +11,7 @@ const StyledHeader = styled.header`
   grid-column-gap: 20px;
 `;
 
-const LogoLink = styled.a`
+const LogoLink = styled(Link)`
   color: #fff;
   text-decoration: none;
   display: inline-block;
@@ -55,7 +56,7 @@ const ProfileLink = styled.a`
 const Header = () => {
   return (
     <StyledHeader>
-      <LogoLink href="" className="logo">
+      <LogoLink to={'/'} className="logo">
         <FontAwesomeIcon icon={faStackOverflow} size="2x" />
         <span>stack <b>UnderFlow</b></span>
       </LogoLink>

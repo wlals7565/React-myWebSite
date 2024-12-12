@@ -1,7 +1,9 @@
-import reset, { Reset } from "styled-reset";
+import reset from "styled-reset";
 import styled, { createGlobalStyle } from "styled-components";
-import Header from "./components/Header";
 import QuestionPage from "./pages/QuestionPage";
+import { Route, Routes } from "react-router";
+import AskPage from "./pages/AskPage";
+import Layout from "./components/Layout";
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
@@ -19,10 +21,13 @@ const GlobalStyle = createGlobalStyle`
 function App() {
   return (
     <div>
-      <Reset />
       <GlobalStyle />
-      <Header />
-      <QuestionPage />
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<QuestionPage />} />
+          <Route path="/ask" element={<AskPage />} />
+        </Route>
+      </Routes>
     </div>
   );
 }
