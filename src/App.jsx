@@ -1,9 +1,15 @@
 import reset from "styled-reset";
-import styled, { createGlobalStyle } from "styled-components";
-import QuestionPage from "./pages/QuestionPage";
+import { createGlobalStyle } from "styled-components";
+import QuestionsPage from "./pages/QuestionsPage";
 import { Route, Routes } from "react-router";
 import AskPage from "./pages/AskPage";
 import Layout from "./components/Layout";
+import { useState } from "react";
+import UserContext from "./contexts/UserContext";
+import LoginPage from "./pages/LoginPage";
+import ProfilePage from "./pages/ProfilePage";
+import RegisterPage from "./pages/RegisterPage";
+import QuestionPage from "./pages/QuestionPage";
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
@@ -19,15 +25,24 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 function App() {
+  const [user, setUser] = useState({email: '', username:''});
+
+
   return (
     <div>
       <GlobalStyle />
+      <UserContext.Provider value={{user, setUser}} >
       <Routes>
         <Route element={<Layout />}>
-          <Route path="/" element={<QuestionPage />} />
+          <Route path="/" element={<QuestionsPage />} />
           <Route path="/ask" element={<AskPage />} />
+          <Route path="/login" element={<LoginPage />}/>
+          <Route path="/profile" element={<ProfilePage />}/>
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/questions/:id" element={<QuestionPage />} />
         </Route>
       </Routes>
+      </UserContext.Provider>
     </div>
   );
 }

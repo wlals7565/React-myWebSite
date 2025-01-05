@@ -1,7 +1,14 @@
+import { useContext, useEffect } from "react";
 import Header from "./Header";
 import { Outlet } from "react-router";
+import { checkAuthStatus } from "../api/auth";
+import UserContext from "../contexts/UserContext";
 
 const Layout = () => {
+  const { setUser } = useContext(UserContext);
+  useEffect(() => {
+    checkAuthStatus(setUser);
+  }, [setUser]);
   return (
     <>
       <Header />

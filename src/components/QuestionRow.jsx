@@ -1,5 +1,6 @@
 import styled from "styled-components";
 
+
 const QuestionStat = styled.div`
   padding: 5px 10px 0;
   font-size: 2rem;
@@ -57,7 +58,7 @@ const UserLink = styled.a`
   color: #3ca4ff;
 `
 
-const QuestionRow = () => {
+const QuestionRow = ({post, HandleClickQuestion}) => {
   return (
     <StyleQuestionRow>
       <QuestionStat>
@@ -70,8 +71,8 @@ const QuestionRow = () => {
         6<span>views</span>
       </QuestionStat>
       <QuestionTitleArea>
-        <QuestionLink>Getting string in quotes in javascript</QuestionLink>
-        <WhoAndWhen> asked 10 minutes ago <UserLink>IJH</UserLink></WhoAndWhen>
+        <QuestionLink onClick={() => {HandleClickQuestion(post.id)}}>{post.title}</QuestionLink>
+        <WhoAndWhen> asked 10 minutes ago <UserLink>{post.author?.name || 'unknown'}</UserLink></WhoAndWhen>
           <Tag>javascript</Tag>
           <Tag>parsing</Tag>
           <Tag>quotes</Tag>

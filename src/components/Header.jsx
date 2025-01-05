@@ -2,13 +2,21 @@ import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStackOverflow } from "@fortawesome/free-brands-svg-icons";
 import { Link } from "react-router";
+import { useContext } from "react";
+import UserContext from "../contexts/UserContext";
+import { logout } from "../api/auth";
 
 const StyledHeader = styled.header`
   background-color: #393939;
   box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2);
   display: grid;
-  grid-template-columns: 240px 1fr 200px;
+  grid-template-columns: 240px 4fr 1fr;
   grid-column-gap: 20px;
+`;
+
+const SpaceAroundDiv = styled.div`
+  display: flex;
+  justify-content: space-around;
 `;
 
 const LogoLink = styled(Link)`
@@ -42,30 +50,58 @@ const SearchInput = styled.input`
   width: 100%;
   border-radius: 3px;
   border: 1px solid #777;
-  background: rgba(0,0,0,.1);
+  background: rgba(0, 0, 0, 0.1);
   padding: 10px 10px;
   margin-top: 17px;
-`
+`;
 
-const ProfileLink = styled.a`
-  color:#fff;
+const HeaderLink = styled(Link)`
+  color: #fff;
   text-decoration: none;
   line-height: 70px;
-`
+  padding: 0 20px;
+`;
 
 const Header = () => {
+  const { user, setUser } = useContext(UserContext);
+
+  const initUser = () => {
+    setUser({email: '', username:''})
+  }
+
+  const handleClickLogout = () => {
+    logout(initUser)
+  }
+  
+
   return (
     <StyledHeader>
-      <LogoLink to={'/'} className="logo">
+      <LogoLink to={"/"} className="logo">
         <FontAwesomeIcon icon={faStackOverflow} size="2x" />
-        <span>stack <b>UnderFlow</b></span>
+        <span>
+          stack <b>UnderFlow</b>
+        </span>
       </LogoLink>
       <form action="" className="search">
         <SearchInput type="text" placeholder="Search..." />
       </form>
-      <ProfileLink href="" className="profile">
-        IJH
-      </ProfileLink>
+      {user.username ? (
+        <SpaceAroundDiv>
+          <HeaderLink to={`/profile`} className="profile">
+            {user.email}
+          </HeaderLink>
+          <HeaderLink onClick={handleClickLogout}>{"Logout"}</HeaderLink>
+        </SpaceAroundDiv>
+      ) : (
+        <SpaceAroundDiv>
+          <HeaderLink to={`/login`} className="login">
+            {`Login`}
+          </HeaderLink>
+          <HeaderLink to={`/register`} className="register">
+            {`Register`}
+          </HeaderLink>
+        </SpaceAroundDiv>
+      )}
     </StyledHeader>
   );
 };
