@@ -29,6 +29,7 @@ const QuestionsPage = () => {
   });
   useEffect(() => {
     getAllPost(params).then(({ data }) => {
+      console.log(data)
       setPosts(data.posts);
       setTotalCount(data.totalCount);
     });

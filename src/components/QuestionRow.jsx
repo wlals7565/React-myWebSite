@@ -73,9 +73,9 @@ const QuestionRow = ({post, HandleClickQuestion}) => {
       <QuestionTitleArea>
         <QuestionLink onClick={() => {HandleClickQuestion(post.id)}}>{post.title}</QuestionLink>
         <WhoAndWhen> asked 10 minutes ago <UserLink>{post.author?.name || 'unknown'}</UserLink></WhoAndWhen>
-          <Tag>javascript</Tag>
-          <Tag>parsing</Tag>
-          <Tag>quotes</Tag>
+        {post.tags && post.tags.length> 0 &&
+          post.tags.map((tag) => <Tag>{tag}</Tag>)
+          }
       </QuestionTitleArea>
     </StyleQuestionRow>
   );

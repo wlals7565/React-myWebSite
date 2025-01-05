@@ -391,7 +391,8 @@ const AskPage = () => {
       return;
     }
     try {
-      await createPost(questionTitle, questionBody);
+      const tags = selected.map((tag) => tag.label)
+      await createPost(questionTitle, questionBody, tags);
       alert("성공적으로 게시글이 올라갔습니다.");
       naviage("/");
     } catch (error) {

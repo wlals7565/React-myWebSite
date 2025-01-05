@@ -1,11 +1,12 @@
 import { client } from ".";
 
-export const createPost = async (title, body) => {
+export const createPost = async (title, body, tags) => {
   await client.post(
     "/posts",
     {
       title,
       body,
+      tags,
     },
     { withCredentials: true }
   );
