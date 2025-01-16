@@ -1,12 +1,17 @@
-import { client } from ".";
+import { client, baseClient } from ".";
 
-export const login = async (callbackfn, credentials, afterLoginSuccessfn, afterLoginFailfn) => {
+export const login = async (
+  callbackfn,
+  credentials,
+  afterLoginSuccessfn,
+  afterLoginFailfn
+) => {
   try {
     const { data } = await client.post("/auth/login", credentials, {
       withCredentials: true,
     });
     console.log(data);
-    callbackfn({ email: data.email, username: data.name });
+    callbackfn({ email: data.email, username: data.name, id: data.uuid });
     afterLoginSuccessfn();
   } catch (error) {
     if (error.response) {
@@ -20,20 +25,24 @@ export const login = async (callbackfn, credentials, afterLoginSuccessfn, afterL
       }
       // 그 외의 오류
       else {
-        afterLoginFailfn("로그인 도중에 문제가 생겼습니다. 나중에 다시 시도해주세요.");
+        afterLoginFailfn(
+          "로그인 도중에 문제가 생겼습니다. 나중에 다시 시도해주세요."
+        );
       }
     }
     // 네트워크 오류
     else {
-      afterLoginFailfn("인터넷 연결이 원할하지 않습니다. 나중에 다시 시도해주세요.");
+      afterLoginFailfn(
+        "인터넷 연결이 원할하지 않습니다. 나중에 다시 시도해주세요."
+      );
     }
   }
 };
 
 export const register = async (form, afterRegisterfn) => {
   try {
-    await client.post('/auth/signup', form, { withCredentials: true });
-    alert("성공적으로 회원가입이 되었습니다.")
+    await client.post("/auth/signup", form, { withCredentials: true });
+    alert("성공적으로 회원가입이 되었습니다.");
     afterRegisterfn();
   } catch (error) {
     if (error.response) {
@@ -49,7 +58,7 @@ export const register = async (form, afterRegisterfn) => {
       else {
         alert("An issue occurred during registration. Please try again.");
       }
-    } 
+    }
     // 네트워크 오류
     else {
       alert("Unable to connect to the server.");
@@ -63,11 +72,15 @@ export const register = async (form, afterRegisterfn) => {
 // 에러로 처리하는게 맞는걸까?
 export const checkAuthStatus = async (callbackfn) => {
   try {
-    const { data } = await client.get("/auth/checkAuthStatus", {
+    const { data } = await baseClient.get("/auth/checkAuthStatus", {
       withCredentials: true,
     });
-    console.log(data);
-    callbackfn({ email: data.email, username: data.username });
+    console.log('checkAuthStatus')
+    console.log(data)
+    if (!data) {
+      return;
+    }
+    callbackfn({ email: data.email, username: data.username, id: data.uuid });
   } catch (error) {
     console.error(error);
   }
@@ -75,8 +88,8 @@ export const checkAuthStatus = async (callbackfn) => {
 
 export const logout = async (afterLogoutFn) => {
   try {
-    await client.get('/auth/logout',{ withCredentials: true });
-    afterLogoutFn()
+    await client.get("/auth/logout", { withCredentials: true });
+    afterLogoutFn();
     alert("You have been logged out successfully.");
   } catch (error) {
     if (error.response) {
@@ -92,7 +105,7 @@ export const logout = async (afterLogoutFn) => {
       else {
         alert("An issue occurred during logout. Please try again.");
       }
-    } 
+    }
     // 네트워크 오류
     else {
       alert("Unable to connect to the server.");

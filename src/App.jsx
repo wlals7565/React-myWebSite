@@ -25,7 +25,7 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 function App() {
-  const [user, setUser] = useState({email: '', username:''});
+  const [user, setUser] = useState({email: '', username:'', id: ''});
 
 
   return (

@@ -66,7 +66,7 @@ const Header = () => {
   const { user, setUser } = useContext(UserContext);
 
   const initUser = () => {
-    setUser({email: '', username:''})
+    setUser({email: '', username:'', id: ''})
   }
 
   const handleClickLogout = () => {

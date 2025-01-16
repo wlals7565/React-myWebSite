@@ -1,6 +1,5 @@
 import styled from "styled-components";
 
-
 const QuestionStat = styled.div`
   padding: 5px 10px 0;
   font-size: 2rem;
@@ -54,6 +53,15 @@ const WhoAndWhen = styled.div`
   padding: 10px 0;
 `
 
+const countVotes = (votes) => {
+  if (votes) {
+    return votes.reduce((accumulator, currentValue) => {
+      return accumulator + currentValue.state;
+    }, 0);
+  }
+  return 0;
+};
+
 const UserLink = styled.a`
   color: #3ca4ff;
 `
@@ -62,19 +70,19 @@ const QuestionRow = ({post, HandleClickQuestion}) => {
   return (
     <StyleQuestionRow>
       <QuestionStat>
-        0<span>votes</span>
+        {countVotes(post.votes)}<span>votes</span>
       </QuestionStat>
       <QuestionStat>
-        1<span>answers</span>
+        {post.answerCount}<span>answers</span>
       </QuestionStat>
       <QuestionStat>
-        6<span>views</span>
+        {post.views}<span>views</span>
       </QuestionStat>
       <QuestionTitleArea>
         <QuestionLink onClick={() => {HandleClickQuestion(post.id)}}>{post.title}</QuestionLink>
         <WhoAndWhen> asked 10 minutes ago <UserLink>{post.author?.name || 'unknown'}</UserLink></WhoAndWhen>
         {post.tags && post.tags.length> 0 &&
-          post.tags.map((tag) => <Tag>{tag}</Tag>)
+          post.tags.map((tag) => <Tag key={tag}>{tag}</Tag>)
           }
       </QuestionTitleArea>
     </StyleQuestionRow>

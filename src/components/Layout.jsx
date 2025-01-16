@@ -7,6 +7,7 @@ import UserContext from "../contexts/UserContext";
 const Layout = () => {
   const { setUser } = useContext(UserContext);
   useEffect(() => {
+    console.log('layout mounted')
     checkAuthStatus(setUser);
   }, [setUser]);
   return (

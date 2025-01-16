@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { getAllPost } from "../api/post";
 import { useNavigate } from "react-router";
 
+
 const StyledHeader = styled.h1`
   font-size: 1.6rem;
 `;
