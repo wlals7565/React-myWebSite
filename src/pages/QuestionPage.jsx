@@ -13,11 +13,10 @@ import {
 } from "../components/StyledComponents";
 import VotingButton from "../components/VotingButton";
 import UserContext from "../contexts/UserContext";
-import CommentForm from "../components/CommentForm";
-import CommentListItem from "../components/CommentListItem";
 import AnswerBox from "../components/AnswerBox";
 import AnswerListItem from "../components/AnswerListItem";
 import { vote } from "../api/post";
+import CommentsBox from "../components/CommentsBox";
 
 const Container = styled.div`
   padding: 30px 20px;
@@ -166,21 +165,6 @@ const StyledHr = styled.hr`
   border-color: #555;
 `;
 
-const CommentsBox = styled.div`
-  margin: 2rem 2rem;
-`;
-
-const AddCommentButton = styled.button`
-  color: #3ca4ff;
-  text-decoration: none;
-  background-color: transparent; /* 배경색을 투명으로 설정 */
-  border: none; /* 테두리를 없앰 */
-  border-radius: 0; /* 모서리 둥글게 설정 (0으로 하면 직각 모서리) */
-  outline: none; /* 포커스 시 나타나는 외곽선 없애기 */
-  padding: 0; /* 버튼 내부 여백 제거 */
-  margin-top: 2rem;
-`;
-
 const countVotes = (votes) => {
   if (votes) {
     return votes.reduce((accumulator, currentValue) => {
@@ -212,12 +196,8 @@ const QuestionPage = () => {
     answers: [],
   });
   const [myVotingState, setMyVotingState] = useState(0);
-  const [showAddCommentForm, setShowAddCommentForm] = useState(false);
+  
   const { user } = useContext(UserContext);
-
-  const handleClickAddACommentButton = () => {
-    setShowAddCommentForm(!showAddCommentForm);
-  };
 
   const handleClickUpVote = useCallback(() => {
     vote(post.id, 1).then(({ data }) =>
@@ -274,32 +254,7 @@ const QuestionPage = () => {
           <UserLink style={{ display: "block" }}>{post.author?.name}</UserLink>
         </WhoAndWhen>
       </QuestionMetaData>
-      <CommentsBox>
-        <StyledList>
-          {post.comments &&
-            post.comments.length > 0 &&
-            post.comments.map((comment, index) => (
-              <CommentListItem
-                key={comment.id}
-                comment={comment}
-                setPost={setPost}
-                index={index}
-              />
-            ))}
-        </StyledList>
-        {!showAddCommentForm && (
-          <AddCommentButton onClick={handleClickAddACommentButton}>
-            Add a comment
-          </AddCommentButton>
-        )}
-        {showAddCommentForm && (
-          <CommentForm
-            setPost={setPost}
-            postId={id}
-            setShowAddCommentForm={setShowAddCommentForm}
-          />
-        )}
-      </CommentsBox>
+      <CommentsBox comments={post.comments} />
       <AnswerBoundrary />
       <Header>
         {post.answers && post.answers.length > 0 ? post.answers.length : "No"}{" "}

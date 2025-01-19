@@ -1,4 +1,8 @@
 import styled from "styled-components";
+import { useState, useEffect, useContext } from "react";
+import UserContext from "../contexts/UserContext";
+import { recommendsToComment } from "../api/comment";
+
 const CircleUpButton = styled.button`
 border-radius: 50%;
 aspect-ratio: 1 / 1;
@@ -28,9 +32,46 @@ min-height: 2rem;
 margin-right: 1rem;
 `;
 
+const RecommendCountBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 3rem;
+`;
 
-const RecommendingButton = ({ handleClickUpVote, handleClickReportButton, upvoteState }) => {
+
+// # TODO 신고 버튼 구현하기
+const RecommendingButton = ({ recommends, commentId }) => {
+  const { user } = useContext(UserContext)
+  const [recommendsState, setRecommendsState] = useState(recommends)
+  const [ upvoteState, setUpvoteState] = useState(false)
+
+
+  const handleClickUpVote = async () => {
+    recommendsToComment(commentId).then(({ data }) => {
+      if(data.id) {
+        setRecommendsState((prev) => [...prev, data])
+        setUpvoteState(true);
+      }
+      else {
+        setRecommendsState((prev) => prev.filter((val) => val.recommender.id !== user.id))
+        setUpvoteState(false);
+      }
+    });
+  }
+
+  useEffect(() => {
+    setUpvoteState(
+      recommendsState.some(
+        (recommend) => recommend.recommender.id === user.id
+      )
+    );
+  }, [recommendsState, user]);
+
+  const handleClickReportButton = () => {}
   return (
+    <>
+    <RecommendCountBox>{recommendsState.length || 0}</RecommendCountBox>
     <VotingBox>
       <CircleUpButton onClick={handleClickUpVote} $upvoteState={upvoteState}>
         &#9650;
@@ -39,6 +80,7 @@ const RecommendingButton = ({ handleClickUpVote, handleClickReportButton, upvote
       &#9872;
       </ReportButton>
     </VotingBox>
+    </>
   );
 };
 

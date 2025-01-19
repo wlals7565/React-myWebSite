@@ -179,6 +179,8 @@ const AnswerListItem = ({ answer, setPost, index }) => {
     );
   }, [answer, setPost, index]);
 
+  // #TODO Answer의 reply를 여기에 업데이트 하면 될거 같은데 어차피 answer의 reply니
+
   useEffect(() => {}, [answer]);
 
   return (
