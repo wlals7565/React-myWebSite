@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { StyledList } from "./StyledComponents";
 import AddCommentForm from "./AddCommentForm";
 import styled from "styled-components";
@@ -27,7 +27,7 @@ const CommentsBox = ({comments}) => {
               />
             ))}
         </StyledList>
-        <AddCommentForm/>
+        <AddCommentForm setCommentsState={setCommentsState}/>
       </CommentsContainer>
   )
 }

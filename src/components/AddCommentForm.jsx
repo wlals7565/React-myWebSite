@@ -13,7 +13,7 @@ const AddCommentButton = styled.button`
   margin-top: 2rem;
 `;
 
-const AddCommentForm = () => {
+const AddCommentForm = ({setCommentsState}) => {
   const [showAddCommentForm, setShowAddCommentForm] = useState(false);
   const handleClickAddACommentButton = () => {
     setShowAddCommentForm(!showAddCommentForm);
@@ -28,6 +28,7 @@ const AddCommentForm = () => {
       {showAddCommentForm && (
         <CommentForm
           setShowAddCommentForm={setShowAddCommentForm}
+          setCommentsState={setCommentsState}
         />
       )}
     </div>

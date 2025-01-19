@@ -2,6 +2,7 @@ import { addComment } from "../api/post";
 import { BlueButton, TextArea } from "./StyledComponents";
 import styled from "styled-components";
 import { useState } from "react";
+import { useParams } from "react-router";
 
 const CommentFormBox = styled.div`
   margin-top: 2rem;
@@ -11,15 +12,15 @@ const ButtonBox = styled.div`
   text-align: right;
 `;
 
-const CommentForm = ({ postId, setPost, setShowAddCommentForm }) => {
+const CommentForm = ({setShowAddCommentForm, setCommentsState }) => {
   const [comment, setComment] = useState("");
+  const { id } = useParams();
   const handleClickAddCommentButton = () => {
-    addComment(postId, comment).then(({ data }) => {
-      console.log('data')
+    addComment(id, comment).then(({ data }) => {
       console.log(data);
       setComment("");
       setShowAddCommentForm(false);
-      setPost((prev) => ({ ...prev, comments: data }));
+      setCommentsState((prev) =>  [...prev, data]);
     });
   };
 
