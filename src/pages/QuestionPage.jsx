@@ -14,6 +14,7 @@ import AnswerListItem from "../components/AnswerListItem";
 import CommentsBox from "../components/CommentsBox";
 import QuestionContainer from "../components/containers/QuestionContainer";
 import TagsContainer from "../components/containers/TagsContainer";
+import LoadingCircle from "../components/presentations/LoadingCircle";
 
 const Container = styled.div`
   padding: 30px 20px;
@@ -29,8 +30,6 @@ const QuestionMetaData = styled.div`
   display: grid;
   grid-template-columns: 9fr 1fr;
 `;
-
-const Tags = styled.div``;
 
 // 제목, 본문, 댓글, 댓글 다는 폼 형식
 const QuestionPage = () => {
@@ -80,7 +79,7 @@ const QuestionPage = () => {
           <AnswerBox setPost={setQuestion} postId={question.id} />
         </Container>
       ) : (
-        "loading"
+        <LoadingCircle/>
       )}
     </>
   );

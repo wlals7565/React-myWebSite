@@ -3,6 +3,7 @@ import BlueButtonLink from "../components/BlueButtonLink";
 import QuestionsContainer from "../components/containers/QuestionsContainer";
 import { useEffect, useState } from "react";
 import { getAllQuestions } from "../api/post";
+import LoadingCircle from "../components/presentations/LoadingCircle";
 
 const StyledHeader = styled.h1`
   font-size: 1.6rem;
@@ -38,7 +39,7 @@ const QuestionsPage = () => {
         <StyledHeader>Top Questions</StyledHeader>
         <BlueButtonLink to={`/ask`}>Ask&nbsp;Question</BlueButtonLink>
       </HeaderRow>
-      {questions ? <QuestionsContainer initialState={questions} /> : "Loading"}
+      {questions ? <QuestionsContainer initialState={questions} /> : <LoadingCircle/>}
       <div>{totalCount}</div>
       <div>리팩토링 했다는 표시 그리고 테스트용겸</div>
     </main>
