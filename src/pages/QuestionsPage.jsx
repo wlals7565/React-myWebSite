@@ -1,9 +1,5 @@
 import styled from "styled-components";
-import QuestionRow from "../components/QuestionRow";
 import BlueButtonLink from "../components/BlueButtonLink";
-import { useState, useEffect } from "react";
-import { getAllPost } from "../api/post";
-import { useNavigate } from "react-router";
 import QuestionsContainer from "../components/containers/QuestionsContainer";
 
 

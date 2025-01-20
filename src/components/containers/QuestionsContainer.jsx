@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getAllPost } from "../../api/post";
+import { getAllQuestions } from "../../api/post";
 import QuestionList from "../presentations/QuestionList";
 
 const QuestionsContainer = () => {
@@ -13,7 +13,7 @@ const QuestionsContainer = () => {
     skip: 0,
   });
   useEffect(() => {
-    getAllPost(params).then(({ data }) => {
+    getAllQuestions(params).then(({ data }) => {
       setQuestions(data.posts);
       setTotalCount(data.totalCount);
     });

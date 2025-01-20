@@ -1,9 +1,7 @@
 import styled from "styled-components";
-import Markdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import { useParams } from "react-router";
 import { useCallback, useContext, useEffect, useState } from "react";
-import { getPost } from "../api/post";
+import { getQuestion } from "../api/post";
 import {
   Tag,
   UserLink,
@@ -11,12 +9,12 @@ import {
   StyledList,
   Header,
 } from "../components/StyledComponents";
-import VotingButton from "../components/VotingButton";
 import UserContext from "../contexts/UserContext";
 import AnswerBox from "../components/AnswerBox";
 import AnswerListItem from "../components/AnswerListItem";
-import { vote } from "../api/post";
+import { voteToPost } from "../api/post";
 import CommentsBox from "../components/CommentsBox";
+import QuestionContainer from "../components/containers/QuestionContainer";
 
 const Container = styled.div`
   padding: 30px 20px;
@@ -188,95 +186,58 @@ const getMyVoteState = (votes, userId) => {
 // 제목, 본문, 댓글, 댓글 다는 폼 형식
 const QuestionPage = () => {
   const { id } = useParams();
-  const [post, setPost] = useState({
-    title: "",
-    body: "",
-    tags: [],
-    votes: [],
-    answers: [],
-  });
-  const [myVotingState, setMyVotingState] = useState(0);
-  
-  const { user } = useContext(UserContext);
+  const [question, setQuestion] = useState(undefined);
 
-  const handleClickUpVote = useCallback(() => {
-    vote(post.id, 1).then(({ data }) =>
-      setPost((prev) => ({ ...prev, votes: data }))
-    );
-  }, [post]);
-
-  const handleClickDownVote = useCallback(() => {
-    vote(post.id, -1).then(({ data }) =>
-      setPost((prev) => ({ ...prev, votes: data }))
-    );
-  }, [post]);
-
-  // 사용자가 질문 처음 들어왔을 때
-  // 게시글 설정
-  // 투표 현황 설정
   useEffect(() => {
-    getPost(id).then((result) => {
-      setPost(result.data);
-      console.log(1);
-      setMyVotingState(getMyVoteState(result.data.votes, user.id));
+    getQuestion(id).then((result) => {
+      setQuestion(result.data);
     });
-  }, [id, user]);
-
-  // 사용자가 투표한 이후 투표 갱신용
-  useEffect(() => {
-    console.log(2);
-    setMyVotingState(getMyVoteState(post.votes, user.id));
-  }, [post, user.id]);
+  }, [id]);
 
   return (
-    <Container>
-      <StyledHeader>{post.title}</StyledHeader>
-      <StyledHr />
-      <QuestionBody>
-        <VotingButton
-          handleClickUpVote={handleClickUpVote}
-          handleClickDownVote={handleClickDownVote}
-          votes={countVotes(post.votes)}
-          state={myVotingState}
-        />
-        <QuestionBodyArea>
-          <Markdown remarkPlugins={[remarkGfm]}>{post.body}</Markdown>
-        </QuestionBodyArea>
-      </QuestionBody>
-      <QuestionMetaData>
-        <Tags>
-          {post.tags &&
-            post.tags.length > 0 &&
-            post.tags.map((tag, index) => <Tag key={index}>{tag}</Tag>)}
-        </Tags>
-        <WhoAndWhen>
-          asked x times ago{" "}
-          <UserLink style={{ display: "block" }}>{post.author?.name}</UserLink>
-        </WhoAndWhen>
-      </QuestionMetaData>
-      <CommentsBox comments={post.comments} />
-      <AnswerBoundrary />
-      <Header>
-        {post.answers && post.answers.length > 0 ? post.answers.length : "No"}{" "}
-        Answers
-      </Header>
-      <StyledList>
-        {post.answers &&
-          post.answers.length > 0 &&
-          post.answers.map((answer, index) => (
-            <AnswerListItem
-              key={answer.id}
-              answer={answer}
-              setPost={setPost}
-              index={index}
-            />
-          ))}
-      </StyledList>
-      <AnswerBox
-        setPost={setPost}
-        postId={post.id}
-      />
-    </Container>
+    <>
+      {question ? (
+        <Container>
+          <QuestionContainer initialState={question} />
+          <QuestionMetaData>
+            <Tags>
+              {question.tags &&
+                question.tags.length > 0 &&
+                question.tags.map((tag, index) => <Tag key={index}>{tag}</Tag>)}
+            </Tags>
+            <WhoAndWhen>
+              asked x times ago{" "}
+              <UserLink style={{ display: "block" }}>
+                {question.author?.name}
+              </UserLink>
+            </WhoAndWhen>
+          </QuestionMetaData>
+          <CommentsBox comments={question.comments} />
+          <AnswerBoundrary />
+          <Header>
+            {question.answers && question.answers.length > 0
+              ? question.answers.length
+              : "No"}{" "}
+            Answers
+          </Header>
+          <StyledList>
+            {question.answers &&
+              question.answers.length > 0 &&
+              question.answers.map((answer, index) => (
+                <AnswerListItem
+                  key={answer.id}
+                  answer={answer}
+                  setPost={setQuestion}
+                  index={index}
+                />
+              ))}
+          </StyledList>
+          <AnswerBox setPost={setQuestion} postId={question.id} />
+        </Container>
+      ) : (
+        "loading"
+      )}
+    </>
   );
 };
 

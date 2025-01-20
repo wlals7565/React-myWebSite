@@ -1,4 +1,4 @@
-import React from "react";
+import PropTypes from 'prop-types';
 import QuestionListItem from "./QuestionListItem";
 
 const QuestionsList = ({ questions }) => {
@@ -6,9 +6,13 @@ const QuestionsList = ({ questions }) => {
     <>
       {questions &&
         questions.length > 0 &&
-        questions.map((question) => <QuestionListItem question={question} />)}
+        questions.map((question) => <QuestionListItem key={question.id} question={question} />)}
     </>
   );
+};
+
+QuestionsList.propTypes = {
+  questions: PropTypes.array.isRequired,
 };
 
 export default QuestionsList;

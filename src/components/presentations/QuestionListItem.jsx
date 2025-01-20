@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components';
 import PropTypes from "prop-types";
 import { useNavigate } from 'react-router';
@@ -91,7 +90,7 @@ QuestionListItem.propTypes =  {
     id:  PropTypes.string.isRequired,
     votes: PropTypes.array.isRequired,
     answerCount: PropTypes.number.isRequired,
-    tags: PropTypes.arrayOf(PropTypes.string).isRequired,
+    tags: PropTypes.arrayOf(PropTypes.string),
     views: PropTypes.number.isRequired,
     title: PropTypes.string.isRequired,
     author: PropTypes.shape({

@@ -12,17 +12,17 @@ export const createPost = async (title, body, tags) => {
   );
 };
 
-export const getPost = async (postId) => {
+export const getQuestion = async (postId) => {
   return await client.get(`/posts/${postId}`);
 };
 
-export const getAllPost = async (params) => {
+export const getAllQuestions = async (params) => {
   return await client.get(`/posts`, {
     params,
   });
 };
 
-export const vote = async (postId, vote) => {
+export const voteToPost = async (postId, vote) => {
   return await client.post(
     `/posts/${postId}/vote?vote=${vote}`,
     {},
