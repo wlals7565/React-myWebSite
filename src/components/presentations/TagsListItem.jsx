@@ -1,5 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react'
+import styled from 'styled-components';
+
 export const Tag = styled.a`
   display: inline-block;
   margin-right: 5px;

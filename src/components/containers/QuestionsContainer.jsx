@@ -1,33 +1,40 @@
-import { useState, useEffect } from "react";
-import { getAllQuestions } from "../../api/post";
+import { useState } from "react";
 import QuestionList from "../presentations/QuestionList";
+import PropTypes from "prop-types";
 
-const QuestionsContainer = () => {
+const QuestionsContainer = ({initialState}) => {
   // 게시글 정보
-  const [questions, setQuestions] = useState([]);
-  // 페이지네이션 용 포스트 총 갯수
-  const [totalCount, setTotalCount] = useState([]);
-  // 쿼리 스트링
-  const [params, setParams] = useState({
-    limit: 15,
-    skip: 0,
-  });
-  useEffect(() => {
-    getAllQuestions(params).then(({ data }) => {
-      setQuestions(data.posts);
-      setTotalCount(data.totalCount);
-    });
-  }, [params]);
-
-  
-
+  const [questions, setQuestions] = useState(initialState);
   return (
     <>
       <QuestionList questions={questions}/>
-      <div>{totalCount}</div>
-      <div>리팩토링 했다는 표시 그리고 테스트용겸</div>
     </>
   )
+}
+
+QuestionsContainer.propTypes = {
+  initialState: PropTypes.arrayOf(PropTypes.shape({
+			id: PropTypes.string.isRequired,
+			title: PropTypes.string.isRequired,
+			body: PropTypes.string.isRequired,
+			tags: PropTypes.arrayOf(PropTypes.string),
+			views: PropTypes.number.isRequired,
+			createdAt: PropTypes.string.isRequired,
+			updatedAt: PropTypes.string.isRequired,
+			deletedAt: PropTypes.string,
+			author: PropTypes.shape({
+				id: PropTypes.string.isRequired,
+				name: PropTypes.string.isRequired,
+				email: PropTypes.string.isRequired
+			}),
+			votes: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        state: PropTypes.number.isRequired,
+        createdAt: PropTypes.string.isRequired,
+        updatedAt: PropTypes.string.isRequired,
+      })),
+			answerCount: PropTypes.number.isRequired,
+  }))
 }
 
 export default QuestionsContainer
