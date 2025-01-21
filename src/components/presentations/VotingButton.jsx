@@ -38,9 +38,6 @@ const VoteCountDiv = styled.div`
 `;
 
 const VotingButton = ({ votes, voteState, handleClickUpVote, handleClickDownVote }) => {
-  useEffect(()=> {
-    console.log(voteState)
-  })
 
   return (
     <VotingBox>

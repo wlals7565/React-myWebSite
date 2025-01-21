@@ -138,8 +138,6 @@ const countVotes = (votes) => {
 };
 
 const getMyVoteState = (votes, userId) => {
-  console.log("votes");
-  console.log(votes);
   const vote = votes.filter((vote) => vote.voter.id === userId);
   if (vote.length === 0) {
     return 0;

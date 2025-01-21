@@ -140,9 +140,6 @@ const QuestionBodyArea = styled.div`
 const QuestionContainer = ({initialState}) => {
   const { id } = useParams();
   const [question, setQuestion] = useState(initialState)
-  useEffect(() => {
-    console.log(question)
-  }, [question])
 
   useEffect(() => {
     getQuestion(id).then((result) => {

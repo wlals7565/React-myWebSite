@@ -16,8 +16,7 @@ const CommentForm = ({setShowAddCommentForm, setCommentsState }) => {
   const [comment, setComment] = useState("");
   const { id } = useParams();
   const handleClickAddCommentButton = () => {
-    addComment(id, comment).then(({ data }) => {
-      console.log(data);
+    addComment(id, comment).then(({ data }) => {;
       setComment("");
       setShowAddCommentForm(false);
       setCommentsState((prev) =>  [...prev, data]);

@@ -15,6 +15,7 @@ import CommentsBox from "../components/CommentsBox";
 import QuestionContainer from "../components/containers/QuestionContainer";
 import TagsContainer from "../components/containers/TagsContainer";
 import LoadingCircle from "../components/presentations/LoadingCircle";
+import CommentsContainer from "../components/containers/CommentsContainer";
 
 const Container = styled.div`
   padding: 30px 20px;
@@ -56,7 +57,8 @@ const QuestionPage = () => {
               </UserLink>
             </WhoAndWhen>
           </QuestionMetaData>
-          <CommentsBox comments={question.comments} />
+          {/* #TODO 여기서부터 리팩토링 하면 됨 */}
+          <CommentsContainer initialState={question.comments} />
           <AnswerBoundrary />
           <Header>
             {question.answers && question.answers.length > 0

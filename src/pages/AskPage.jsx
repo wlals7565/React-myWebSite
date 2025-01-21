@@ -354,7 +354,6 @@ const AskPage = () => {
   const onAdd = useCallback(
     (newTag) => {
       setSelected([...selected, newTag]);
-      console.log(selected)
     },
     [selected]
   );
