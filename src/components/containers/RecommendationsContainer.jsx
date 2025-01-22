@@ -54,4 +54,4 @@ RecommendationsContainer.propTypes = {
   commentId: PropTypes.string.isRequired
 }
 
-export default RecommendationsContainer
+export default React.memo(RecommendationsContainer);

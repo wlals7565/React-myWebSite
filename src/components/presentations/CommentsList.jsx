@@ -15,4 +15,4 @@ CommentsList.propTypes = {
   comments: PropTypes.array.isRequired,
 }
 
-export default CommentsList
+export default React.memo(CommentsList)
