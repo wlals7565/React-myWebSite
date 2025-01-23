@@ -77,7 +77,7 @@ const CommentsContainer = ({ initialState, questionId }) => {
 
 CommentsContainer.propTypes = {
   initialState: PropTypes.array.isRequired,
-  questionId: PropTypes.array.isRequired,
+  questionId: PropTypes.string.isRequired,
 };
 
 export default CommentsContainer;

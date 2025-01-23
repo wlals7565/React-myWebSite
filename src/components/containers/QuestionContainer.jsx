@@ -1,17 +1,24 @@
-import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react'
-import styled from 'styled-components';
-import VotesContainer from './VotesContainer';
-import Markdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import { useParams } from 'react-router';
+import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import VotesContainer from "./VotesContainer";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { useParams } from "react-router";
 import { getQuestion } from "../../api/post";
+import { UserLink, WhoAndWhen, Header } from "../StyledComponents";
+import TagsContainer from "./TagsContainer";
+import CommentsContainer from "./CommentsContainer";
+
+
 
 const QuestionHeader = styled.h1`
   font-size: 1.6rem;
   margin-bottom: 20px;
   color: white;
 `;
+
+
 
 const StyledHr = styled.hr`
   border-color: #555;
@@ -137,9 +144,15 @@ const QuestionBodyArea = styled.div`
   }
 `;
 
-const QuestionContainer = ({initialState}) => {
+const QuestionMetaData = styled.div`
+  margin: 10px;
+  display: grid;
+  grid-template-columns: 9fr 1fr;
+`;
+
+const QuestionContainer = ({ initialState }) => {
   const { id } = useParams();
-  const [question, setQuestion] = useState(initialState)
+  const [question, setQuestion] = useState(initialState);
 
   useEffect(() => {
     getQuestion(id).then((result) => {
@@ -147,21 +160,30 @@ const QuestionContainer = ({initialState}) => {
     });
   }, [id]);
 
-  
   return (
     <>
-    <QuestionHeader>{question.title}</QuestionHeader>
-    <StyledHr/>
-    <QuestionBody>
-      <VotesContainer initialState={question.votes}/>
-      <QuestionBodyArea>
+      <QuestionHeader>{question.title}</QuestionHeader>
+      <StyledHr />
+      <QuestionBody>
+        <VotesContainer initialState={question.votes} />
+        <QuestionBodyArea>
           <Markdown remarkPlugins={[remarkGfm]}>{question.body}</Markdown>
         </QuestionBodyArea>
-    </QuestionBody>
-    </>
-  )
-}
+      </QuestionBody>
+      <QuestionMetaData>
+        <TagsContainer initialState={question.tags} />
+        <WhoAndWhen>
+          asked x times ago{" "}
+          <UserLink style={{ display: "block" }}>
+            {question.author?.name}
+          </UserLink>
+        </WhoAndWhen>
+      </QuestionMetaData>
+      <CommentsContainer initialState={question.comments} questionId={question.id} />
 
+    </>
+  );
+};
 
 QuestionContainer.propTypes = {
   initialState: PropTypes.shape({
@@ -171,13 +193,12 @@ QuestionContainer.propTypes = {
     tags: PropTypes.arrayOf(PropTypes.string),
     views: PropTypes.number.isRequired,
     createdAt: PropTypes.string.isRequired,
-	  updatedAt: PropTypes.string.isRequired,
-	  deletedAt: PropTypes.string,
+    updatedAt: PropTypes.string.isRequired,
+    deletedAt: PropTypes.string,
     comments: PropTypes.array,
     votes: PropTypes.array,
     answers: PropTypes.array,
-  })
-}
+  }),
+};
 
-
-export default QuestionContainer
+export default QuestionContainer;

@@ -2,18 +2,10 @@ import styled from "styled-components";
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
 import { getQuestion } from "../api/post";
-import {
-  UserLink,
-  WhoAndWhen,
-  StyledList,
-  Header,
-} from "../components/StyledComponents";
 import AnswerBox from "../components/AnswerBox";
-import AnswerListItem from "../components/AnswerListItem";
 import QuestionContainer from "../components/containers/QuestionContainer";
-import TagsContainer from "../components/containers/TagsContainer";
 import LoadingCircle from "../components/presentations/LoadingCircle";
-import CommentsContainer from "../components/containers/CommentsContainer";
+import AnswersContainer from "../components/containers/AnswersContainer";
 
 const Container = styled.div`
   padding: 30px 20px;
@@ -24,11 +16,6 @@ const AnswerBoundrary = styled.hr`
   border-color: rgba(255, 255, 255, 0.1);
 `;
 
-const QuestionMetaData = styled.div`
-  margin: 10px;
-  display: grid;
-  grid-template-columns: 9fr 1fr;
-`;
 
 // 제목, 본문, 댓글, 댓글 다는 폼 형식
 const QuestionPage = () => {
@@ -48,36 +35,8 @@ const QuestionPage = () => {
       {question ? (
         <Container>
           <QuestionContainer initialState={question} />
-          <QuestionMetaData>
-            <TagsContainer initialState={question.tags} />
-            <WhoAndWhen>
-              asked x times ago{" "}
-              <UserLink style={{ display: "block" }}>
-                {question.author?.name}
-              </UserLink>
-            </WhoAndWhen>
-          </QuestionMetaData>
-          <CommentsContainer initialState={question.comments} questionId={question.id} />
           <AnswerBoundrary />
-          {/* #TODO 여기서부터 리팩토링 하면 됨 */}
-          <Header>
-            {question.answers && question.answers.length > 0
-              ? question.answers.length
-              : "No"}{" "}
-            Answers
-          </Header>
-          <StyledList>
-            {question.answers &&
-              question.answers.length > 0 &&
-              question.answers.map((answer, index) => (
-                <AnswerListItem
-                  key={answer.id}
-                  answer={answer}
-                  setPost={setQuestion}
-                  index={index}
-                />
-              ))}
-          </StyledList>
+          <AnswersContainer initialState={question.answers}/>
           <AnswerBox setPost={setQuestion} postId={question.id} />
         </Container>
       ) : (

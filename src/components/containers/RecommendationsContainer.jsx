@@ -5,9 +5,6 @@ import { recommendsToComment } from '../../api/comment'
 import PropTypes from 'prop-types'
 
 const RecommendationsContainer = ({initialState, commentId}) => {
-  useEffect(()=> {
-    console.log(initialState)
-  })
   const [recommendations, setRecommendations] = useState(initialState)
   const { user } = useContext(UserContext)
   const [ upvoteState, setUpvoteState] = useState(false)

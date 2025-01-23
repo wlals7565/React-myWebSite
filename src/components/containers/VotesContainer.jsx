@@ -26,7 +26,7 @@ const VotesContainer = ({ initialState }) => {
     }
     setVoteState(0);
     return;
-  }, [id, user, votes]);
+  }, [user, votes]);
 
   const handleClickUpVote = useCallback(() => {
     voteToPost(id, upVote).then(({ data }) => {

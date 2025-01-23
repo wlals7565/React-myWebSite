@@ -130,18 +130,10 @@ const StyledLi = styled.li`
 
 
 const AnswerListItem = ({ answer }) => {
-  const [myVotingState, setMyVotingState] = useState(0);
 
   return (
     <StyledLi>
-      {/* #TODO 여기를 해야 함. */}
-      <VotesForAnswerContainer initialState={answer.votes}/>
-      <VotingButton
-        votes={countVotes(answer.votes)}
-        handleClickUpVote={handleClickUpVote}
-        handleClickDownVote={handleClickDownVote}
-        state={myVotingState}
-      ></VotingButton>
+      <VotesForAnswerContainer initialState={answer.votes} answerId={answer.id} />
       <AnswerBodyArea>
         <Markdown remarkPlugins={[remarkGfm]}>{answer.body}</Markdown>
       </AnswerBodyArea>
