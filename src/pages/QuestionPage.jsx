@@ -36,8 +36,7 @@ const QuestionPage = () => {
         <Container>
           <QuestionContainer initialState={question} />
           <AnswerBoundrary />
-          <AnswersContainer initialState={question.answers}/>
-          <AnswerBox setPost={setQuestion} postId={question.id} />
+          <AnswersContainer initialState={question.answers} questionId={question.id}/>
         </Container>
       ) : (
         <LoadingCircle />

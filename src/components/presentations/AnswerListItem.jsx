@@ -1,10 +1,10 @@
-import { useState } from "react";
-import VotingButton from "./VotingButton";
+import React from "react";
 import styled from "styled-components";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import VotesForAnswerContainer from "../containers/VotesForAnswerContainer";
 import PropTypes from "prop-types";
+
 
 const AnswerBodyArea = styled.div`
   padding: 20px;
@@ -152,4 +152,4 @@ AnswerListItem.propTypes = {
   })
 }
 
-export default AnswerListItem
+export default React.memo(AnswerListItem)
