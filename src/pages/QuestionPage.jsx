@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
 import { getQuestion } from "../api/post";
-import AnswerBox from "../components/AnswerBox";
 import QuestionContainer from "../components/containers/QuestionContainer";
 import LoadingCircle from "../components/presentations/LoadingCircle";
 import AnswersContainer from "../components/containers/AnswersContainer";

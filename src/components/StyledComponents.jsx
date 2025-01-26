@@ -203,7 +203,6 @@ export const PreviewArea = styled.div`
 export const StyledList = styled.ul`
   li {
     border-top: 1px solid #868e96;
-    padding: 5px 0;
     color: white;
     padding: 1rem 0rem;
     display: flex;
