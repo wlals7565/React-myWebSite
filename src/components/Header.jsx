@@ -87,7 +87,7 @@ const Header = () => {
       </form>
       {user.username ? (
         <SpaceAroundDiv>
-          <HeaderLink to={`/profile`} className="profile">
+          <HeaderLink to={`/profiles`} className="profile">
             {user.email}
           </HeaderLink>
           <HeaderLink onClick={handleClickLogout}>{"Logout"}</HeaderLink>

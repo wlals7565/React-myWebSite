@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { BlueButton, Header, PreviewArea } from "../StyledComponents";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import PropTypes from "prop-types";
 
 const AnswerBodyTextarea = styled.textarea`
   background: none;
@@ -34,5 +35,11 @@ const AnswerBox = ({ handleChangeOnAnswerBody, handleClickPostAnswerButton, answ
     </>
   );
 };
+
+AnswerBox.propTypes = {
+  handleChangeOnAnswerBody: PropTypes.func.isRequired,
+  handleClickPostAnswerButton: PropTypes.func.isRequired,
+  answerBody: PropTypes.string.isRequired,
+}
 
 export default AnswerBox;

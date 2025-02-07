@@ -212,3 +212,7 @@ export const StyledList = styled.ul`
     border-bottom: 1px solid #868e96;
   }
 `;
+
+export const Container = styled.div`
+  padding: 30px 20px;
+`;
