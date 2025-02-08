@@ -41,7 +41,6 @@ const QuestionsPage = () => {
       </HeaderRow>
       {questions ? <QuestionsContainer initialState={questions} /> : <LoadingCircle/>}
       <div>{totalCount}</div>
-      <div>리팩토링 했다는 표시 그리고 테스트용겸</div>
     </main>
   );
 };
