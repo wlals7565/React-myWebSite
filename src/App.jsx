@@ -10,6 +10,7 @@ import LoginPage from "./pages/LoginPage";
 import ProfilePage from "./pages/ProfilePage";
 import RegisterPage from "./pages/RegisterPage";
 import QuestionPage from "./pages/QuestionPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
@@ -40,6 +41,7 @@ function App() {
           <Route path="/profiles/:username" element={<ProfilePage />}/>
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/questions/:id" element={<QuestionPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
       </UserContext.Provider>

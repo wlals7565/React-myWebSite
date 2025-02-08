@@ -1,6 +1,6 @@
 import { client } from ".";
 
-const checkAuth = async (callbackfn) => {
+export const checkAuth = async (callbackfn) => {
   try {
     const { data } = await client.get("/profiles/me");
 
@@ -13,4 +13,11 @@ const checkAuth = async (callbackfn) => {
   }
 };
 
-export default checkAuth;
+export const getUserProfile = async (username, callbackfn) => {
+  try {
+    const {data} = await client.get(`/profiles/${username}`);
+    callbackfn(data);
+  } catch(error) {
+    console.error(error);
+  }
+}
