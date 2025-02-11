@@ -21,3 +21,18 @@ export const getUserProfile = async (username, callbackfn) => {
     console.error(error);
   }
 }
+
+export const uploadAvatar = async (username, avatar, callbackfn) => {
+  try{
+    const {data} = await client.post(`/profiles/${username}/avatar/upload`, avatar, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      withCredentials: true,
+    });
+    console.log(data)
+    callbackfn(data.imageUrl);
+  } catch(error) {
+    console.error(error);
+  }
+}

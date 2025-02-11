@@ -3,11 +3,13 @@ import styled from "styled-components";
 import { serverApiPath } from "../api";
 import BlueButton from "../components/BlueButton";
 import { useParams } from "react-router";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef } from "react";
 import UserContext from "../contexts/UserContext";
 import { useState } from "react";
 import { getUserProfile } from "../api/profile";
 import LoadingCircle from "../components/presentations/LoadingCircle";
+import { uploadAvatar } from "../api/profile";
+import axios from "axios";
 
 const FlexBox = styled.div`
   display: flex;
@@ -15,13 +17,23 @@ const FlexBox = styled.div`
   gap: 2rem;
 `;
 
+const InvisibleFileInput = styled.input`
+  display: none;
+`
+
 const AboutMeBodyArea = styled.div`
   padding: 20px;
   background-color: #444;
   border-radius: 5px;
-  height: 100%;
   white-space: pre-line;
   color: #fff;
+  height: 100%;
+`;
+
+const ProfileBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 `;
 
 const NameBox = styled.div`
@@ -33,12 +45,63 @@ const NameBox = styled.div`
   justify-content: space-between;
 `;
 
+const ProfileImage = styled.img`
+  width: 100%; // 실제 표시될 크기
+  height: 100%;
+  object-fit: cover; // 비율 유지하면서 자르기
+  object-position: center; // 중앙 정렬
+  border-radius: 10px;
+`;
+
+const ClickToChangeImageButton = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+  color: white;
+  text-align: center;
+  padding: 10px 0px;
+  cursor: pointer;
+  font-size: 16px;
+  border-bottom-left-radius: 10px; /* 왼쪽 아래 모서리 둥글게 */
+  border-bottom-right-radius: 10px; /* 오른쪽 아래 모서리 둥글게 */
+`;
+
+const RelativeDiv = styled.div`
+  position: relative;
+  width: 20rem;
+  height: 20rem;
+`
+
 const ProfilePage = () => {
   const { user } = useContext(UserContext);
   const { username } = useParams();
   const [userProfile, setUserProfile] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const fileInputRef = useRef(null);
+
+  const changeImageUrl = (imageUrl) => {
+    setUserProfile((prev) => ({
+      ...prev, profile: {...prev.profile, picturePath: imageUrl}
+    }))
+  }
+
+  const handleFileChange = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("avatar", file);
+
+    try {
+      await uploadAvatar(username, formData, changeImageUrl);
+      // 업로드 성공 시 UI 업데이트
+    } catch (error) {
+      console.error("업로드 실패:", error);
+    }
+  };
 
   useEffect(() => {
     getUserProfile(username, setUserProfile)
@@ -50,6 +113,19 @@ const ProfilePage = () => {
         setError(true);
       });
   }, [user, username]);
+
+  const handleClickChangeImage = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleErrorOnImage = () => {
+    setUserProfile((prev) => ({
+      ...prev, profile: {...prev.profile, picturePath: 'unknown.png'}
+    }))
+  }
+
   return (
     <Container>
       {error ? (
@@ -60,19 +136,20 @@ const ProfilePage = () => {
         <div>Not Found User</div>
       ) : (
         <FlexBox>
-          <img
-            src={userProfile.profile.picturePath !== "unknown"? `${serverApiPath}/avatars/${userProfile.profile.picturePath}` :`${serverApiPath}/avatars/unknown.png`}
-            style={{
-              width: "20rem", // 실제 표시될 크기
-              height: "20rem",
-              objectFit: "cover", // 비율 유지하면서 자르기
-              objectPosition: "center", // 중앙 정렬
-              borderRadius: "10px",
-            }}
-          />
-          <div
-            style={{ display: "flex", flexDirection: "column", flexGrow: 1 }}
-          >
+          <RelativeDiv>
+            <ProfileImage
+              src={
+                userProfile.profile.picturePath !== "unknown"
+                  ? `${serverApiPath}/avatars/${userProfile.profile.picturePath}`
+                  : `${serverApiPath}/avatars/unknown.png`
+              }
+              onError={handleErrorOnImage}
+            />
+            <ClickToChangeImageButton onClick={handleClickChangeImage}>
+              Click to change image
+            </ClickToChangeImageButton>
+          </RelativeDiv>
+          <ProfileBox>
             <NameBox>
               {username === user.username ? (
                 <>
@@ -87,7 +164,8 @@ const ProfilePage = () => {
               )}
             </NameBox>
             <AboutMeBodyArea>{userProfile.profile.aboutMe}</AboutMeBodyArea>
-          </div>
+          </ProfileBox>
+          <InvisibleFileInput type="file" ref={fileInputRef} accept="image/*" onChange={handleFileChange}/>
         </FlexBox>
       )}
     </Container>
