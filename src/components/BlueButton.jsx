@@ -7,6 +7,7 @@ const BlueButton = styled.button`
   border: 0;
   border-radius: 5px;
   padding: 10px 10px;
+  cursor: pointer;
 `;
 
 export default BlueButton;

@@ -9,7 +9,7 @@ import { useState } from "react";
 import { getUserProfile } from "../api/profile";
 import LoadingCircle from "../components/presentations/LoadingCircle";
 import { uploadAvatar } from "../api/profile";
-import axios from "axios";
+import { pathProfileAboutMe } from "../api/profile";
 
 const FlexBox = styled.div`
   display: flex;
@@ -19,7 +19,7 @@ const FlexBox = styled.div`
 
 const InvisibleFileInput = styled.input`
   display: none;
-`
+`;
 
 const AboutMeBodyArea = styled.div`
   padding: 20px;
@@ -28,6 +28,17 @@ const AboutMeBodyArea = styled.div`
   white-space: pre-line;
   color: #fff;
   height: 100%;
+  font-size: 1rem;
+`;
+
+const AboutMeBodyTextArea = styled.textarea`
+  padding: 20px;
+  background-color: #444;
+  border-radius: 5px;
+  white-space: pre-line;
+  color: #fff;
+  height: 100%;
+  font-size: 1rem;
 `;
 
 const ProfileBox = styled.div`
@@ -72,7 +83,7 @@ const RelativeDiv = styled.div`
   position: relative;
   width: 20rem;
   height: 20rem;
-`
+`;
 
 const ProfilePage = () => {
   const { user } = useContext(UserContext);
@@ -81,12 +92,53 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const fileInputRef = useRef(null);
+  const [editMode, setEditMode] = useState(false);
+  const [editAboutMeBody, setEditAboutMeBody] = useState("");
+  const aboutMeTextAreaRef = useRef(null);
+
+  const handleChangeProfileAboutMe = (e) => {
+    setEditAboutMeBody(e.target.value);
+  };
+
+  const handleClickCancleButton = () => {
+    setEditAboutMeBody(userProfile.profile.aboutMe);
+    setEditMode(false);
+  };
+
+  const handleClickEditProfileButton = () => {
+    setEditAboutMeBody(userProfile.profile.aboutMe);
+    setEditMode(true);
+
+    setTimeout(() => {
+      if (aboutMeTextAreaRef.current) {
+        aboutMeTextAreaRef.current.focus();
+        const length = aboutMeTextAreaRef.current.value.length;
+        aboutMeTextAreaRef.current.setSelectionRange(length, length);
+      }
+    }, 0);
+  };
+
+  const handleClickSaveProfileButton = () => {
+    pathProfileAboutMe(editAboutMeBody, username)
+      .then(() => {
+        setEditMode(false);
+        setUserProfile((prev) => ({
+          ...prev,
+          profile: { ...prev.profile, aboutMe: editAboutMeBody },
+        }));
+      })
+      .catch((error) => {
+        console.error(error);
+        prompt("에러가 발생하여 프로필을 업데이트 하지 못 했습니다.");
+      });
+  };
 
   const changeImageUrl = (imageUrl) => {
     setUserProfile((prev) => ({
-      ...prev, profile: {...prev.profile, picturePath: imageUrl}
-    }))
-  }
+      ...prev,
+      profile: { ...prev.profile, picturePath: imageUrl },
+    }));
+  };
 
   const handleFileChange = async (event) => {
     const file = event.target.files?.[0];
@@ -122,9 +174,10 @@ const ProfilePage = () => {
 
   const handleErrorOnImage = () => {
     setUserProfile((prev) => ({
-      ...prev, profile: {...prev.profile, picturePath: 'unknown.png'}
-    }))
-  }
+      ...prev,
+      profile: { ...prev.profile, picturePath: "unknown.png" },
+    }));
+  };
 
   return (
     <Container>
@@ -145,17 +198,44 @@ const ProfilePage = () => {
               }
               onError={handleErrorOnImage}
             />
-            <ClickToChangeImageButton onClick={handleClickChangeImage}>
-              Click to change image
-            </ClickToChangeImageButton>
+            {user.username === username && (
+              <ClickToChangeImageButton onClick={handleClickChangeImage}>
+                Click to change image
+              </ClickToChangeImageButton>
+            )}
           </RelativeDiv>
           <ProfileBox>
             <NameBox>
               {username === user.username ? (
-                <>
-                  <div>{userProfile.name}</div>
-                  <BlueButton type="button">Edit profile</BlueButton>
-                </>
+                editMode ? (
+                  <>
+                    <div>{userProfile.name}</div>
+                    <div>
+                      <BlueButton
+                        type="button"
+                        onClick={handleClickSaveProfileButton}
+                      >
+                        Save profile
+                      </BlueButton>{" "}
+                      <BlueButton
+                        type="button"
+                        onClick={handleClickCancleButton}
+                      >
+                        Cancle
+                      </BlueButton>{" "}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div>{userProfile.name}</div>
+                    <BlueButton
+                      type="button"
+                      onClick={handleClickEditProfileButton}
+                    >
+                      Edit profile
+                    </BlueButton>
+                  </>
+                )
               ) : (
                 <>
                   <div>{userProfile.name}</div>
@@ -163,9 +243,22 @@ const ProfilePage = () => {
                 </>
               )}
             </NameBox>
-            <AboutMeBodyArea>{userProfile.profile.aboutMe}</AboutMeBodyArea>
+            {editMode ? (
+              <AboutMeBodyTextArea
+                onChange={handleChangeProfileAboutMe}
+                value={editAboutMeBody}
+                ref={aboutMeTextAreaRef}
+              />
+            ) : (
+              <AboutMeBodyArea>{userProfile.profile.aboutMe}</AboutMeBodyArea>
+            )}
           </ProfileBox>
-          <InvisibleFileInput type="file" ref={fileInputRef} accept="image/*" onChange={handleFileChange}/>
+          <InvisibleFileInput
+            type="file"
+            ref={fileInputRef}
+            accept="image/*"
+            onChange={handleFileChange}
+          />
         </FlexBox>
       )}
     </Container>

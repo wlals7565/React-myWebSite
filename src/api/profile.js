@@ -15,24 +15,38 @@ export const checkAuth = async (callbackfn) => {
 
 export const getUserProfile = async (username, callbackfn) => {
   try {
-    const {data} = await client.get(`/profiles/${username}`);
+    const { data } = await client.get(`/profiles/${username}`);
     callbackfn(data);
-  } catch(error) {
+  } catch (error) {
     console.error(error);
   }
-}
+};
 
 export const uploadAvatar = async (username, avatar, callbackfn) => {
-  try{
-    const {data} = await client.post(`/profiles/${username}/avatar/upload`, avatar, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      withCredentials: true,
-    });
-    console.log(data)
+  try {
+    const { data } = await client.post(
+      `/profiles/${username}/avatar/upload`,
+      avatar,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      }
+    );
+    console.log(data);
     callbackfn(data.imageUrl);
-  } catch(error) {
+  } catch (error) {
     console.error(error);
   }
-}
+};
+
+export const pathProfileAboutMe = async (aboutMe, username) => {
+  try {
+    const { data } = await client.patch(`/profiles/${username}`, {aboutMe}, {
+      withCredentials: true,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
