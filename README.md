@@ -11,8 +11,6 @@
 .env파일 설정
 > VITE_API_URL = http://severAddress:80 // 서버 주소
 # 로컬 환경에서 프로젝트 실행 방법
-> npm i
->
 > npm run dev
 
 # 프로젝트 기술 스택
