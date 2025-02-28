@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStackOverflow } from "@fortawesome/free-brands-svg-icons";
-import { Link } from "react-router";
-import { useContext } from "react";
+import { Link, useNavigate } from "react-router";
+import { useContext, useState } from "react";
 import UserContext from "../contexts/UserContext";
 import { logout } from "../api/auth";
 
@@ -53,6 +53,7 @@ const SearchInput = styled.input`
   background: rgba(0, 0, 0, 0.1);
   padding: 10px 10px;
   margin-top: 17px;
+  color: white;
 `;
 
 const HeaderLink = styled(Link)`
@@ -63,7 +64,9 @@ const HeaderLink = styled(Link)`
 `;
 
 const Header = () => {
+  const navigate = useNavigate();
   const { user, setUser } = useContext(UserContext);
+  const [searchInput, setSearchInput] = useState("123456")
 
   const initUser = () => {
     setUser({email: '', username:'', id: ''})
@@ -71,6 +74,20 @@ const Header = () => {
 
   const handleClickLogout = () => {
     logout(initUser)
+  }
+
+  const hanldeOnChangeSearchInput = (e) => {
+    setSearchInput(e.target.value);
+  }
+
+  const handlePressEnterSearch = (e) => {
+    if(e.key === 'Enter') {
+      e.preventDefault()
+      if( searchInput.length === 0) return;
+      navigate(`?keyword=${searchInput}`)
+      setSearchInput("")
+      console.log('press Enter')
+    }
   }
   
 
@@ -83,7 +100,7 @@ const Header = () => {
         </span>
       </LogoLink>
       <form action="" className="search">
-        <SearchInput type="text" placeholder="Search..." />
+        <SearchInput type="text" placeholder="Search..." value={searchInput} onChange={hanldeOnChangeSearchInput} onKeyDown={handlePressEnterSearch} />
       </form>
       {user.username ? (
         <SpaceAroundDiv>

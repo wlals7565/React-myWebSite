@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import QuestionList from "../presentations/QuestionList";
 import PropTypes from "prop-types";
 
 const QuestionsContainer = ({initialState}) => {
   // 게시글 정보
-  const [questions, setQuestions] = useState(initialState);
+  const [questions, setQuestions] = useState("");
+	useEffect(() => {
+		setQuestions(initialState)
+	}, [initialState])
   return (
     <>
       <QuestionList questions={questions}/>
