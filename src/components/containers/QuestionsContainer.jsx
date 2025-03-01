@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 const QuestionsContainer = ({initialState}) => {
   // 게시글 정보
-  const [questions, setQuestions] = useState("");
+  const [questions, setQuestions] = useState([]);
 	useEffect(() => {
 		setQuestions(initialState)
 	}, [initialState])

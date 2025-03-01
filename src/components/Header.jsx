@@ -100,7 +100,7 @@ const Header = () => {
         </span>
       </LogoLink>
       <form action="" className="search">
-        <SearchInput type="text" placeholder="Search..." value={searchInput} onChange={hanldeOnChangeSearchInput} onKeyDown={handlePressEnterSearch} />
+        <SearchInput id={"searchInput"} type="text" placeholder="Search..." value={searchInput} onChange={hanldeOnChangeSearchInput} onKeyDown={handlePressEnterSearch} />
       </form>
       {user.username ? (
         <SpaceAroundDiv>

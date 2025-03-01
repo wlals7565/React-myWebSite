@@ -66,7 +66,7 @@ const QuestionListItem = ({question}) => {
   return (
     <StyleQuestionRow>
       <QuestionStat>
-        {question.votes.length}<span>votes</span>
+        {question.votes.reduce((prev, current) => prev+current.state, 0)}<span>votes</span>
       </QuestionStat>
       <QuestionStat>
         {question.answerCount}<span>answers</span>
