@@ -14,9 +14,14 @@ import NotFoundPage from "./pages/NotFoundPage";
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
+
   body{
+    font-size: 16px;
     background-color: #2d2d2d;
-    font-family: "Roboto Serif", serif;
+    font-family: "Pretendard GOV Variable", "Pretendard GOV", -apple-system, BlinkMacSystemFont, system-ui, 
+                 Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", 
+                 "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", 
+                 "Segoe UI Symbol", sans-serif !important;
   }
 
   a {

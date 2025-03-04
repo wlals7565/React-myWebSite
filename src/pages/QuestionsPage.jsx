@@ -6,6 +6,7 @@ import { getAllQuestions } from "../api/post";
 import LoadingCircle from "../components/presentations/LoadingCircle";
 import { useSearchParams } from "react-router";
 import Pagination from "../components/presentations/Pagination";
+import { BaseContainer } from "../components/StyledComponents";
 
 // 기본 값 설정
 const maxRows = 10;
@@ -92,7 +93,7 @@ const QuestionsPage = () => {
   }, [keyword]);
 
   return (
-    <main>
+    <BaseContainer>
       <HeaderRow>
         <StyledHeader>Top Questions</StyledHeader>
         <BlueButtonLink to={`/ask`}>Ask&nbsp;Question</BlueButtonLink>
@@ -115,7 +116,7 @@ const QuestionsPage = () => {
           handleClickLastButton={handleClickLastButton}
         />
       )}
-    </main>
+    </BaseContainer>
   );
 };
 

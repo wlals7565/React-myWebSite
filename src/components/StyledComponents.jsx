@@ -225,3 +225,7 @@ export const StyledList = styled.ul`
 export const Container = styled.div`
   padding: 30px 20px;
 `;
+
+export const BaseContainer = styled.main`
+  margin: 0rem 1.5rem;
+`
