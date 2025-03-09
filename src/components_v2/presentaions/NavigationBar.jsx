@@ -27,6 +27,7 @@ const Menu = styled.div`
   &:hover {
     text-decoration: underline;
     text-underline-offset: 0.5rem;
+    text-decoration-color: black;
   }
 `;
 
@@ -34,7 +35,7 @@ const NavigationBar = () => {
   return (
     <Bar>
       <MenuBar>
-        <Menu>질문 게시판</Menu>
+        <Menu style={{color: '#246BEB'}}>질문 게시판</Menu>
         <Menu>실시간 채팅 질문</Menu>
         <Menu>태그 검색</Menu>
       </MenuBar>
