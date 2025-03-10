@@ -1,9 +1,9 @@
 import React from 'react'
 
-const CalenderHeader = () => {
+const CalendarHeader = () => {
   return (
-    <div>CalenderHeader</div>
+    <div>CalendarHeader</div>
   )
 }
 
-export default CalenderHeader
+export default CalendarHeader

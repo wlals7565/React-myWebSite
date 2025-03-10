@@ -1,8 +1,6 @@
-import React from 'react'
-
 const CalendarSideBar = () => {
   return (
-    <div>CalendarSideBar</div>
+    <div style={{width: '15rem'}}>CalendarSideBar</div>
   )
 }
 
