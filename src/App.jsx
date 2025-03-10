@@ -8,6 +8,8 @@ import NotFoundPage from "./pages/NotFoundPage";
 import HomePage from "./pages/v2/HomePage";
 import QuestionsPage from "./pages/v2/QuestionsPage";
 import ChatPage from "./pages/v2/ChatPage";
+import CalendarPage from "./pages/Calendar/CalendarPage";
+import TestPage from "./pages/test/TestPage";
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
@@ -39,6 +41,8 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/Questions" element={<QuestionsPage />} />
             <Route path="/Chat" element={<ChatPage />} />
+            <Route path="/Calendar" element={<CalendarPage />} />
+            <Route path="/test" element={<TestPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>

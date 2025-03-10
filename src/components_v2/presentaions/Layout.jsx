@@ -19,7 +19,7 @@ const Layout = () => {
   return (
     <>
       <Header />
-      <BodyBox>
+      <BodyBox style={{padding: 0}}>
         <Outlet />
       </BodyBox>
       <Footer />
