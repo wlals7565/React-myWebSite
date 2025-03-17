@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router";
 import styled from "styled-components";
 
 const LogoAndUtilityMenuBox = styled.div`
@@ -40,17 +41,31 @@ const MenuBox = styled.div`
 `;
 
 const MediumUtilityMenu = () => {
+  const navigate = useNavigate()
+
+  const handleClickLogoBox = () => {
+    navigate('/')
+  }
+
+  const handleClickLogin = () => {
+    navigate('/login');
+  }
+
+  const handleClickRegister = () => {
+    navigate('/register');
+  }
+
   return (
     <LogoAndUtilityMenuBox>
-      <LogoBox>
+      <LogoBox onClick={handleClickLogoBox}>
         <Logo src="../../../svg/logo.svg" /> 이정훈의 질문 게시판
       </LogoBox>
       <UtilityMenuBox>
-        <MenuBox>
+        <MenuBox onClick={handleClickLogin}>
           <Icon src="../../../svg/login.svg" />
           로그인
         </MenuBox>
-        <MenuBox>
+        <MenuBox onClick={handleClickRegister}>
           <Icon src="../../../svg/signin.svg" />
           회원가입
         </MenuBox>

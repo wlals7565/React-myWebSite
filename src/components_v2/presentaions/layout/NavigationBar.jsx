@@ -1,5 +1,7 @@
-import React from "react";
 import styled from "styled-components";
+import LayoutContext from "../../../contexts/layout/LayoutContext";
+import { useNavigate } from "react-router";
+import { useContext } from "react";
 
 const Bar = styled.div`
   margin-top: 2rem;
@@ -32,10 +34,22 @@ const Menu = styled.div`
 `;
 
 const NavigationBar = () => {
+  
+  const navigate = useNavigate();
+
+  const handleClickCalendarMenu = () => {
+    navigate('/calendar');
+  }
+
+  const handleClickQuestionsMenu = () => {
+    navigate('/questions')
+  }
+
   return (
     <Bar>
       <MenuBar>
-        <Menu style={{color: '#246BEB'}}>질문 게시판</Menu>
+        <Menu onClick={handleClickQuestionsMenu} style={{color: '#246BEB'}}>질문 게시판</Menu>
+        <Menu onClick= {handleClickCalendarMenu}>일정 관리</Menu>
         <Menu>실시간 채팅 질문</Menu>
         <Menu>태그 검색</Menu>
       </MenuBar>

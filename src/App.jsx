@@ -10,6 +10,9 @@ import QuestionsPage from "./pages/v2/QuestionsPage";
 import ChatPage from "./pages/v2/ChatPage";
 import CalendarPage from "./pages/Calendar/CalendarPage";
 import TestPage from "./pages/test/TestPage";
+import LoginPage from "./pages/login/LoginPage";
+import LayoutContext from "./contexts/layout/LayoutContext";
+import RegisterPage from "./pages/register/RegisterPage";
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
@@ -30,22 +33,29 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 function App() {
+  // 유저 정보 담는 객체
   const [user, setUser] = useState({ email: "", username: "", id: "" });
 
+  // center 중간에 모으기 마진 양쪽 22.5rem, wide 전체 화면 마진 양쪽 0rem
+  const [layout, setLayout] = useState("center");
   return (
     <div>
+      <GlobalStyle />
       <UserContext.Provider value={{ user, setUser }}>
-        <GlobalStyle />
-        <Routes>
-          <Route element={<Layout />}>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/Questions" element={<QuestionsPage />} />
-            <Route path="/Chat" element={<ChatPage />} />
-            <Route path="/Calendar" element={<CalendarPage />} />
-            <Route path="/test" element={<TestPage />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </Route>
-        </Routes>
+        <LayoutContext.Provider value={{ layout, setLayout }}>
+          <Routes>
+            <Route element={<Layout layout={layout} />}>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/Questions" element={<QuestionsPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/Chat" element={<ChatPage />} />
+              <Route path="/Calendar" element={<CalendarPage />} />
+              <Route path="/test" element={<TestPage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Route>
+          </Routes>
+        </LayoutContext.Provider>
       </UserContext.Provider>
     </div>
   );

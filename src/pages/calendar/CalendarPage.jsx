@@ -4,9 +4,10 @@ import CalendarHeader from "../../components_v2/presentaions/calendar/CalendarHe
 import CalendarSideBar from "../../components_v2/presentaions/calendar/CalendarSideBar";
 import styled from "styled-components";
 import dayjs from "dayjs";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import CalendarSidebarContext from "../../contexts/calendar/CalendarSidebarContext";
 import CalendarAddEventModal from "../../components_v2/presentaions/calendar/CalendarAddEventModal";
+import LayoutContext from "../../contexts/layout/LayoutContext";
 
 const CalendarBodyBox = styled.div`
   display: flex;
@@ -19,6 +20,15 @@ const CalendarHeadBox = styled.div`
 `;
 
 const CalendarPage = () => {
+  const { setLayout } = useContext(LayoutContext);
+
+  useEffect(() => {
+    setLayout("wide")
+    return () => setLayout("center")
+  }, [])
+
+
+
   // 이번 달 달력 2D 배열
   const [currentMonth, setCurrentMonth] = useState(getDaysMatrixForMonth());
   // 현재 년 월 일
