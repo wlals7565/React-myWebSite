@@ -1,10 +1,10 @@
 import { useContext, useEffect } from "react";
-import Header from "./Header";
+import Header from "./layout/Header";
 import { Outlet } from "react-router";
 import { checkAuthStatus } from "../../api/auth";
 import UserContext from "../../contexts/UserContext";
 import styled from "styled-components";
-import Footer from "./Footer";
+import Footer from "./layout/Footer";
 
 const BodyBox = styled.div`
   padding-left: 22.5rem;

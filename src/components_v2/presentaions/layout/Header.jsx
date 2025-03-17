@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router";
 import { useContext, useState } from "react";
-import UserContext from "../../contexts/UserContext";
-import { logout } from "../../api/auth";
+import UserContext from "../../../contexts/UserContext";
+import { logout } from "../../../api/auth";
 import SmallUtilityMenu from "./SmallUtilityMenu";
 import MediumUtilityMenu from "./MediumUtilityMenu"
 import NavigationBar from "./NavigationBar";

@@ -10,7 +10,7 @@ const dayOfWeekArray = ['일요일', '월요일', '화요일','수요일', '목�
 const CalendarOfMonthBox = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: ${({$height}) => $height ? $height : "100vh" };
   border-top: 1px solid #E9E9EB;
   border-left: 1px solid #E9E9EB;
   border-radius: 10px;
@@ -38,9 +38,9 @@ const checkToday = (day) => {
   return (dayjs().date() === day.date() && dayjs().month() === day.month() && dayjs().year() === day.year())
 }
 
-const CalendarMonth = ({ currentMonth, currentDay }) => {
+const CalendarMonth = ({ currentMonth, $height }) => {
   return (
-    <CalendarOfMonthBox>
+    <CalendarOfMonthBox $height={$height}>
       <DayOfWeekBox>{dayOfWeekArray.map((val,index) => (<DayBox key={index} style={{padding: '1rem 0'}}>{val}</DayBox>))}</DayOfWeekBox>
       {currentMonth.map((week, index) => (
         <WeekBox key={index}>
@@ -55,7 +55,7 @@ const CalendarMonth = ({ currentMonth, currentDay }) => {
 
 CalendarMonth.propTypes = {
   currentMonth: PropTypes.array.isRequired,
-  currentDay: PropTypes.instanceOf(dayjs).isRequired,
+  $height: PropTypes.string,
 }
 
 export default CalendarMonth;
