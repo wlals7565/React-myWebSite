@@ -77,6 +77,9 @@ export const checkAuthStatus = async (callbackfn) => {
     if (!data) {
       return;
     }
+    if(!data.email) {
+      return;
+    }
     callbackfn({ email: data.email, username: data.username, id: data.uuid });
   } catch (error) {
     console.error(error);
@@ -87,25 +90,8 @@ export const logout = async (afterLogoutFn) => {
   try {
     await client.get("/auth/logout", { withCredentials: true });
     afterLogoutFn();
-    alert("You have been logged out successfully.");
+    alert("성공적으로 로그아웃 하였습니다.");
   } catch (error) {
-    if (error.response) {
-      // 클라이언트가 잘못된 요청을 보낸 경우
-      if (error.response.status === 400) {
-        alert("Logout request is invalid. Please try again.");
-      }
-      // 인증되지 않은 상태에서 로그아웃 시도
-      else if (error.response.status === 401) {
-        alert("You are not logged in.");
-      }
-      // 서버 측 오류
-      else {
-        alert("An issue occurred during logout. Please try again.");
-      }
-    }
-    // 네트워크 오류
-    else {
-      alert("Unable to connect to the server.");
-    }
+      alert("로그아웃 도중 문제가 생겼습니다. 잠시 후 다시 시도해 주세요.");
   }
 };

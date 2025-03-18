@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useCallback, useContext, useState } from "react";
-import UserContext from "../../contexts/UserContext";
+import UserContext from "../../contexts/user/UserContext";
 import { login } from "../../api/auth";
 import { useNavigate } from "react-router";
 

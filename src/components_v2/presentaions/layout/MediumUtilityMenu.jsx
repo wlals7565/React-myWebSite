@@ -1,6 +1,8 @@
-import React from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
+import UserContext from "../../../contexts/user/UserContext";
+import { logout } from "../../../api/auth";
+import { useContext } from "react";
 
 const LogoAndUtilityMenuBox = styled.div`
   margin: 1rem 22.5rem 0;
@@ -41,19 +43,31 @@ const MenuBox = styled.div`
 `;
 
 const MediumUtilityMenu = () => {
-  const navigate = useNavigate()
+  const { user, setUser } = useContext(UserContext);
+  const navigate = useNavigate();
 
   const handleClickLogoBox = () => {
-    navigate('/')
-  }
+    navigate("/");
+  };
 
   const handleClickLogin = () => {
-    navigate('/login');
-  }
+    navigate("/login");
+  };
 
   const handleClickRegister = () => {
-    navigate('/register');
+    navigate("/register");
+  };
+
+  // 로그아웃시 저장된 유저 상태 초기화
+  const initUser = () => {
+    setUser({email: '', username:'', id: ''})
   }
+
+  const handleClickLogout = () => {
+    logout(initUser)
+  }
+
+
 
   return (
     <LogoAndUtilityMenuBox>
@@ -61,14 +75,29 @@ const MediumUtilityMenu = () => {
         <Logo src="../../../svg/logo.svg" /> 이정훈의 질문 게시판
       </LogoBox>
       <UtilityMenuBox>
-        <MenuBox onClick={handleClickLogin}>
-          <Icon src="../../../svg/login.svg" />
-          로그인
-        </MenuBox>
-        <MenuBox onClick={handleClickRegister}>
-          <Icon src="../../../svg/signin.svg" />
-          회원가입
-        </MenuBox>
+        {user.email ? (
+          <>
+            <MenuBox onClick={handleClickLogin}>
+              <Icon src="../../../svg/smile.svg" />
+              계정정보
+            </MenuBox>
+            <MenuBox onClick={handleClickLogout}>
+              <Icon src="../../../svg/smile.svg" />
+              로그아웃
+            </MenuBox>
+          </>
+        ) : (
+          <>
+            <MenuBox onClick={handleClickLogin}>
+              <Icon src="../../../svg/login.svg" />
+              로그인
+            </MenuBox>
+            <MenuBox onClick={handleClickRegister}>
+              <Icon src="../../../svg/signin.svg" />
+              회원가입
+            </MenuBox>
+          </>
+        )}
       </UtilityMenuBox>
     </LogoAndUtilityMenuBox>
   );

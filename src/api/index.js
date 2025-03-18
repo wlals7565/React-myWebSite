@@ -7,6 +7,7 @@ export const client = axios.create({
   timeout: 5000, // 요청 제한 시간
   headers: {
     "Content-Type": "application/json",
+    "ngrok-skip-browser-warning": "anyThing",
   },
 });
 
@@ -15,6 +16,7 @@ export const baseClient = axios.create({
   timeout: 5000, // 요청 제한 시간
   headers: {
     "Content-Type": "application/json",
+    "ngrok-skip-browser-warning": "anyThing",
   },
 });
 

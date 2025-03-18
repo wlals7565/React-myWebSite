@@ -1,10 +1,7 @@
-import { useContext, useEffect } from "react";
-import Header from "./layout/Header";
+import Header from "./Header";
 import { Outlet } from "react-router";
-import { checkAuthStatus } from "../../api/auth";
-import UserContext from "../../contexts/UserContext";
 import styled from "styled-components";
-import Footer from "./layout/Footer";
+import Footer from "./Footer";
 import PropTypes from "prop-types";
 
 const BodyBox = styled.div`
@@ -13,11 +10,6 @@ const BodyBox = styled.div`
 `;
 
 const Layout = ({layout}) => {
-  const { setUser } = useContext(UserContext);
-
-  useEffect(() => {
-    checkAuthStatus(setUser);
-  }, [setUser]);
   return (
     <>
         <Header />

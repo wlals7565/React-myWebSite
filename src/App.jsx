@@ -1,9 +1,9 @@
 import reset from "styled-reset";
 import { createGlobalStyle } from "styled-components";
 import { Route, Routes } from "react-router";
-import Layout from "./components_v2/presentaions/Layout";
-import { useState } from "react";
-import UserContext from "./contexts/UserContext";
+import Layout from "./components_v2/presentaions/layout/Layout";
+import { useState, useEffect } from "react";
+import UserContext from "./contexts/user/UserContext";
 import NotFoundPage from "./pages/NotFoundPage";
 import HomePage from "./pages/v2/HomePage";
 import QuestionsPage from "./pages/v2/QuestionsPage";
@@ -13,6 +13,7 @@ import TestPage from "./pages/test/TestPage";
 import LoginPage from "./pages/login/LoginPage";
 import LayoutContext from "./contexts/layout/LayoutContext";
 import RegisterPage from "./pages/register/RegisterPage";
+import { checkAuthStatus } from "./api/auth";
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
@@ -38,6 +39,11 @@ function App() {
 
   // center 중간에 모으기 마진 양쪽 22.5rem, wide 전체 화면 마진 양쪽 0rem
   const [layout, setLayout] = useState("center");
+
+  // 처음 페이지 들어왔을 때 로그인 여부 확인
+  useEffect(() => {
+    checkAuthStatus(setUser);
+  }, [setUser])
   return (
     <div>
       <GlobalStyle />
