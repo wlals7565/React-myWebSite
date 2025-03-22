@@ -72,17 +72,17 @@ const MediumUtilityMenu = () => {
   return (
     <LogoAndUtilityMenuBox>
       <LogoBox onClick={handleClickLogoBox}>
-        <Logo src="../../../svg/logo.svg" /> 이정훈의 질문 게시판
+        <Logo src="../../../svg/logo.svg" /> 이정훈의 웹사이트
       </LogoBox>
       <UtilityMenuBox>
         {user.email ? (
           <>
             <MenuBox onClick={handleClickLogin}>
-              <Icon src="../../../svg/smile.svg" />
+              <Icon src="../../../svg/userinfo.svg" />
               계정정보
             </MenuBox>
             <MenuBox onClick={handleClickLogout}>
-              <Icon src="../../../svg/smile.svg" />
+              <Icon src="../../../svg/logout.svg" />
               로그아웃
             </MenuBox>
           </>

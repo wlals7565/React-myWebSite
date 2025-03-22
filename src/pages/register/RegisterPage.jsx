@@ -15,6 +15,7 @@ const RegisterBox = styled.div`
   border: 1px solid #8e8e8e;
   width: 50vw;
   margin: 1rem auto;
+  background-color: #F0F0F0;
 `;
 
 const InputBox = styled.div`
@@ -46,11 +47,10 @@ const Input = styled.input`
 
 const MessageBox = styled.div`
   color: ${({ $color }) => ($color ? $color : "white")};
-  margin-bottom: 20px;
+  margin-bottom: 0.5rem;
   font-weight: bold;
   width: 25vw;
   margin-top: 0.5rem;
-  height: 2rem;
 `;
 
 const RegisterButton = styled.button`

@@ -24,7 +24,7 @@ const Footer = () => {
     <footer>
       <FooterBox>
       <LogoBox>
-        <Logo src="../../../svg/logo.svg" /> 이정훈의 질문 게시판
+        <Logo src="../../../svg/logo.svg" /> 이정훈의 웹사이트
       </LogoBox>
         <nav>
           <ul>

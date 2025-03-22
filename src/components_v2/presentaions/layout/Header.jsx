@@ -29,23 +29,6 @@ const Header = () => {
     setUser({ email: "", username: "", id: "" });
   };
 
-  const handleClickLogout = () => {
-    logout(initUser);
-  };
-
-  const hanldeOnChangeSearchInput = (e) => {
-    setSearchInput(e.target.value);
-  };
-
-  const handlePressEnterSearch = (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      if (searchInput.length === 0) return;
-      navigate(`?keyword=${searchInput}`);
-      setSearchInput("");
-      console.log("press Enter");
-    }
-  };
 
 
   return (

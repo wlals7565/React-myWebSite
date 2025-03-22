@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
 import { getAllQuestions } from "../../api/post";
 import QuestionList from "../presentaions/QuestionList";

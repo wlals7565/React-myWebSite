@@ -42,7 +42,7 @@ const NavigationBar = () => {
   }
 
   const handleClickQuestionsMenu = () => {
-    navigate('/questions')
+    navigate('/questionList')
   }
 
   return (
