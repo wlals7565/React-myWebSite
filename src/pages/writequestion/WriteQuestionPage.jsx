@@ -6,6 +6,11 @@ import { createPost } from "../../api/post";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ReactTags } from "react-tag-autocomplete";
+import { uploadImage } from "../../api/image";
+
+const urlTransform = (url, key, node) => {
+  return url; // URL을 그대로 반환
+};
 
 const WriteQuestionBox = styled.div`
   height: 100vh;
@@ -40,12 +45,13 @@ const MarkDownTextarea = styled.textarea`
   box-sizing: border-box;
   outline: none;
   flex: 1;
+  resize: none;
 `;
 
 const PreViewBox = styled.div`
   flex: 1;
   padding: 5rem 2rem;
-  background-color: #F3FCF3;
+  background-color: #f3fcf3;
   overflow-y: scroll;
 
   h1 {
@@ -334,12 +340,47 @@ const ReactTagBox = styled.div`
   }
 `;
 
+const MenuBar = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin-top: 1rem;
+  align-items: center;
+`;
+
+const ExitButton = styled.button`
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  font-size: 1.5rem;
+`;
+
+const PostButton = styled.button`
+  border-radius: 20px;
+  border: none;
+  background-color: #246beb;
+  color: #ffffff;
+  padding: 0.5rem 1rem;
+  font-size: 1.5rem;
+
+  &:hover {
+    background-color: #1d56bc;
+  }
+
+  &:active {
+    background-color: #16408d;
+  }
+`;
+
 const WriteQuestionPage = () => {
   const [questionTitle, setQuestionTitle] = useState("");
   const [questionBody, setQuestionBody] = useState("");
   const [selected, setSelected] = useState([]);
-  const naviage = useNavigate();
+  const navigate = useNavigate();
 
+  // 태그 추가할 때
   const onAdd = useCallback(
     (newTag) => {
       setSelected([...selected, newTag]);
@@ -347,6 +388,12 @@ const WriteQuestionPage = () => {
     [selected]
   );
 
+  // 나가기 버튼 눌렀을 때
+  const handleClickExitButton = () => {
+    navigate(-1);
+  };
+
+  // 태그에서 삭제할 떄
   const onDelete = useCallback(
     (tagIndex) => {
       setSelected(selected.filter((_, i) => i !== tagIndex));
@@ -354,14 +401,17 @@ const WriteQuestionPage = () => {
     [selected]
   );
 
+  // 제목 바뀔때
   const handleChangeQuestionTitle = useCallback((e) => {
     setQuestionTitle(e.target.value);
   }, []);
 
+  // 본문 바뀔때
   const handleChangeBodyTextarea = useCallback((e) => {
     setQuestionBody(e.target.value);
   }, []);
 
+  // 게시하기 전에 유효한지 확인
   const validateForm = () => {
     if (questionTitle == "" || questionTitle.length > 100) {
       return "제목은 1자 이상 100자 이하여야 합니다.";
@@ -371,6 +421,97 @@ const WriteQuestionPage = () => {
     }
   };
 
+  // 본문에 사진 붙여넣을때
+  const handlePaste = async (event) =>  {
+    const items = event.clipboardData.items;
+
+    for (const item of items) {
+      if (item.type.startsWith("image/")) {
+        const blob = await item.getAsFile();
+        const formData = new FormData();
+        formData.append('file', blob );
+        uploadImage(formData).then()
+        const blobUrl = URL.createObjectURL(blob);
+
+        const textarea = event.target;
+        const cursorPos = textarea.selectionStart; // 커서 위치
+
+        // 기존 텍스트를 분리하여 커서 위치에 이미지 삽입
+        const textBefore = textarea.value.substring(0, cursorPos);
+        const textAfter = textarea.value.substring(cursorPos);
+        const newText = `${textBefore}![image](${blobUrl})${textAfter}`;
+
+        // 텍스트를 삽입할 때 setRangeText를 사용하여 이미지 URL 삽입
+        textarea.setRangeText(newText.substring(cursorPos, newText.length));
+
+        // 커서 위치 갱신
+        textarea.selectionStart = textarea.selectionEnd =
+          cursorPos + `![image](${blobUrl})`.length;
+
+        // 기본 붙여넣기 방지
+        event.preventDefault();
+
+        uploadImage(formData).then(({data}) => {
+          // 서버에서 받은 URL로 blob URL을 교체
+          const serverApiPath = import.meta.env.VITE_API_URL
+          const updatedText = textarea.value.replace(blobUrl, serverApiPath + "/" + data.imagePath.replace(/\\/g, '/'));
+  
+          // 교체된 텍스트를 다시 textarea에 설정
+          textarea.value = updatedText;
+        });
+      }
+    }
+  };
+
+  const handleDragOver = (event) => {
+    event.preventDefault(); // 드래그된 아이템을 드롭할 수 있도록 허용
+  };
+  
+  const handleDrop = async (event) => {
+    event.preventDefault();
+  
+    const items = event.dataTransfer.items;
+    
+    // 드래그한 항목이 이미지인지 확인
+    for (const item of items) {
+      if (item.type.startsWith("image/")) {
+        const blob = await item.getAsFile();
+        const formData = new FormData();
+        formData.append('file', blob );
+        uploadImage(formData).then()
+        const blobUrl = URL.createObjectURL(blob);
+
+        const textarea = event.target;
+        const cursorPos = textarea.selectionStart; // 커서 위치
+
+        // 기존 텍스트를 분리하여 커서 위치에 이미지 삽입
+        const textBefore = textarea.value.substring(0, cursorPos);
+        const textAfter = textarea.value.substring(cursorPos);
+        const newText = `${textBefore}![image](${blobUrl})${textAfter}`;
+
+        // 텍스트를 삽입할 때 setRangeText를 사용하여 이미지 URL 삽입
+        textarea.setRangeText(newText.substring(cursorPos, newText.length));
+
+        // 커서 위치 갱신
+        textarea.selectionStart = textarea.selectionEnd =
+          cursorPos + `![image](${blobUrl})`.length;
+
+        // 기본 붙여넣기 방지
+        event.preventDefault();
+
+        uploadImage(formData).then(({data}) => {
+          // 서버에서 받은 URL로 blob URL을 교체
+          const serverApiPath = import.meta.env.VITE_API_URL
+          const updatedText = textarea.value.replace(blobUrl, serverApiPath + "/" + data.imagePath.replace(/\\/g, '/'));
+  
+          // 교체된 텍스트를 다시 textarea에 설정
+          textarea.value = updatedText;
+        });
+      }
+    }
+  };
+
+  // 게시글 게시할 때
   const handleSubmitQuestion = async (e) => {
     e.preventDefault();
     const errorMessage = validateForm();
@@ -382,7 +523,7 @@ const WriteQuestionPage = () => {
       const tags = selected.map((tag) => tag.label);
       await createPost(questionTitle, questionBody, tags);
       alert("성공적으로 게시글이 올라갔습니다.");
-      naviage("/");
+      navigate("/");
     } catch (error) {
       console.log(error);
     }
@@ -391,7 +532,10 @@ const WriteQuestionPage = () => {
   return (
     <WriteQuestionBox>
       <MarkDownBox>
-        <MarkDownTitleInput placeholder="제목을 입력하세요"></MarkDownTitleInput>
+        <MarkDownTitleInput
+          onChange={handleChangeQuestionTitle}
+          placeholder="제목을 입력하세요"
+        ></MarkDownTitleInput>
         <ReactTagBox>
           <ReactTags
             labelText="태그를 선택하거나 입력해주세요."
@@ -405,13 +549,25 @@ const WriteQuestionPage = () => {
           />
         </ReactTagBox>
         <MarkDownTextarea
-          placeholder="질문에 대한 정보를 제공해주세요. 마크다운 사용이 가능합니다."
+          placeholder="질문에 대한 정보를 제공해주세요. 마크다운 사용이 가능합니다. 또한 이미지 붙여넣기 및 이미지 드래그 앤 드랍이 가능합니다."
           value={questionBody}
           onChange={handleChangeBodyTextarea}
+          onPaste={handlePaste}
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
         ></MarkDownTextarea>
+        <MenuBar>
+          <ExitButton onClick={handleClickExitButton}>
+            <img src="../../../svg/arrowleft.svg" />
+            나가기{" "}
+          </ExitButton>{" "}
+          <PostButton onClick={handleSubmitQuestion}>게시하기</PostButton>
+        </MenuBar>
       </MarkDownBox>
       <PreViewBox>
-        <Markdown remarkPlugins={[remarkGfm]}>{questionBody}</Markdown>
+        <Markdown remarkPlugins={[remarkGfm]} urlTransform={urlTransform}>
+          {questionBody}
+        </Markdown>
       </PreViewBox>
     </WriteQuestionBox>
   );

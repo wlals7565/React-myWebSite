@@ -63,6 +63,9 @@ const QuestionLink = styled.a`
   cursor: pointer;
   white-space: nowrap;
   border-bottom: 1px solid transparent;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%; /* 부모 요소의 크기를 초과하면 말줄임표 적용 */
 `;
 
 const WhoAndWhen = styled.div`
