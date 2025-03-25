@@ -16,6 +16,7 @@ import RegisterPage from "./pages/register/RegisterPage";
 import { checkAuthStatus } from "./api/auth";
 import WriteQuestionPage from "./pages/writequestion/WriteQuestionPage";
 import PlayPage from "./pages/play/PlayPage";
+import QuestionPage from "./pages/question/QuestionPage";
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
@@ -56,6 +57,7 @@ function App() {
             <Route element={<Layout layout={layout} />}>
               <Route path="/" element={<HomePage />} />
               <Route path="/QuestionList" element={<QuestionListPage />} />
+              <Route path="/Questions/:id" element={<QuestionPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/Chat" element={<ChatPage />} />

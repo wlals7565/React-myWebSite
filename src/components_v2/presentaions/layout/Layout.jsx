@@ -5,8 +5,8 @@ import Footer from "./Footer";
 import PropTypes from "prop-types";
 
 const BodyBox = styled.div`
-  padding-left: 10vw;
-  padding-right: 10vw;
+  padding-left: 15vw;
+  padding-right: 15vw;
 `;
 
 const Layout = ({layout}) => {
