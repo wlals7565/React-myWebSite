@@ -15,6 +15,7 @@ import LayoutContext from "./contexts/layout/LayoutContext";
 import RegisterPage from "./pages/register/RegisterPage";
 import { checkAuthStatus } from "./api/auth";
 import WriteQuestionPage from "./pages/writequestion/WriteQuestionPage";
+import PlayPage from "./pages/play/PlayPage";
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
@@ -59,6 +60,7 @@ function App() {
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/Chat" element={<ChatPage />} />
               <Route path="/Calendar" element={<CalendarPage />} />
+              <Route path="/play" element={<PlayPage />} />
               <Route path="/test" element={<TestPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Route>

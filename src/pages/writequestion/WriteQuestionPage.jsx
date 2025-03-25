@@ -422,15 +422,15 @@ const WriteQuestionPage = () => {
   };
 
   // 본문에 사진 붙여넣을때
-  const handlePaste = async (event) =>  {
+  const handlePaste = async (event) => {
     const items = event.clipboardData.items;
 
     for (const item of items) {
       if (item.type.startsWith("image/")) {
         const blob = await item.getAsFile();
         const formData = new FormData();
-        formData.append('file', blob );
-        uploadImage(formData).then()
+        formData.append("file", blob);
+        uploadImage(formData).then();
         const blobUrl = URL.createObjectURL(blob);
 
         const textarea = event.target;
@@ -451,11 +451,14 @@ const WriteQuestionPage = () => {
         // 기본 붙여넣기 방지
         event.preventDefault();
 
-        uploadImage(formData).then(({data}) => {
+        uploadImage(formData).then(({ data }) => {
           // 서버에서 받은 URL로 blob URL을 교체
-          const serverApiPath = import.meta.env.VITE_API_URL
-          const updatedText = textarea.value.replace(blobUrl, serverApiPath + "/" + data.imagePath.replace(/\\/g, '/'));
-  
+          const serverApiPath = import.meta.env.VITE_API_URL;
+          const updatedText = textarea.value.replace(
+            blobUrl,
+            serverApiPath + "/" + data.imagePath.replace(/\\/g, "/")
+          );
+
           // 교체된 텍스트를 다시 textarea에 설정
           textarea.value = updatedText;
         });
@@ -466,19 +469,19 @@ const WriteQuestionPage = () => {
   const handleDragOver = (event) => {
     event.preventDefault(); // 드래그된 아이템을 드롭할 수 있도록 허용
   };
-  
+
   const handleDrop = async (event) => {
     event.preventDefault();
-  
+
     const items = event.dataTransfer.items;
-    
+
     // 드래그한 항목이 이미지인지 확인
     for (const item of items) {
       if (item.type.startsWith("image/")) {
         const blob = await item.getAsFile();
         const formData = new FormData();
-        formData.append('file', blob );
-        uploadImage(formData).then()
+        formData.append("file", blob);
+        uploadImage(formData).then();
         const blobUrl = URL.createObjectURL(blob);
 
         const textarea = event.target;
@@ -499,11 +502,14 @@ const WriteQuestionPage = () => {
         // 기본 붙여넣기 방지
         event.preventDefault();
 
-        uploadImage(formData).then(({data}) => {
+        uploadImage(formData).then(({ data }) => {
           // 서버에서 받은 URL로 blob URL을 교체
-          const serverApiPath = import.meta.env.VITE_API_URL
-          const updatedText = textarea.value.replace(blobUrl, serverApiPath + "/" + data.imagePath.replace(/\\/g, '/'));
-  
+          const serverApiPath = import.meta.env.VITE_API_URL;
+          const updatedText = textarea.value.replace(
+            blobUrl,
+            serverApiPath + "/" + data.imagePath.replace(/\\/g, "/")
+          );
+
           // 교체된 텍스트를 다시 textarea에 설정
           textarea.value = updatedText;
         });
@@ -565,7 +571,23 @@ const WriteQuestionPage = () => {
         </MenuBar>
       </MarkDownBox>
       <PreViewBox>
-        <Markdown remarkPlugins={[remarkGfm]} urlTransform={urlTransform}>
+        <Markdown
+          remarkPlugins={[remarkGfm]}
+          components={{
+            img: ({ node, ...props }) => (
+              <img
+                {...props}
+                style={{
+                  display: "block",
+                  margin: "0.5rem auto",
+                  maxWidth: "80%",
+                  maxHeight: "auto",
+                }}
+              />
+            ),
+          }}
+          urlTransform={urlTransform}
+        >
           {questionBody}
         </Markdown>
       </PreViewBox>

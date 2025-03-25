@@ -45,6 +45,10 @@ const NavigationBar = () => {
     navigate('/questionList')
   }
 
+  const handleClickPlayMenu = () => {
+    navigate('/play')
+  }
+
   return (
     <Bar>
       <MenuBar>
@@ -52,6 +56,7 @@ const NavigationBar = () => {
         <Menu onClick= {handleClickCalendarMenu}>일정 관리</Menu>
         <Menu>실시간 채팅 질문</Menu>
         <Menu>태그 검색</Menu>
+        <Menu onClick={handleClickPlayMenu}>심심풀이용</Menu>
       </MenuBar>
     </Bar>
   );
