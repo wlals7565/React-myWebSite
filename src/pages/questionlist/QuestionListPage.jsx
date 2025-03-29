@@ -4,6 +4,7 @@ import { useNavigate, useSearchParams } from "react-router";
 import { getAllQuestions } from "../../api/post";
 import QuestionList from "../../components_v2/presentaions/questionlist/QuestionList";
 import Pagination from "../../components_v2/presentaions/questionlist/Pagination";
+import LoadingCircle from "../../components_v2/presentaions/common/LoadingCircle";
 
 // 검색 바
 const Bar = styled.div`
@@ -159,29 +160,34 @@ const QuestionListPage = () => {
   }
 
   return (
-    <>
-      <Bar>
-        <Search src="../../../svg/search.svg" />
-        <InputBar placeholder="검색어를 입력해주세요." maxLength={20} />
-      </Bar>
-      <ButtonBox>
-        <Button onClick={handleClickWritePostButton}>글쓰기</Button>
-      </ButtonBox>
-      <QuestionList questionList={questionList} />
-      {totalCount && totalCount > 0 && (
-        <Pagination
-          maxLink={maxLink}
-          totalLink={totalCount}
-          createOnClickLinkHandler={createOnClickLinkHandler}
-          currentPage={currentPage}
-          maxRows={maxRows}
-          handleClickNextButton={handleClickNextButton}
-          handleClickPrevButton={handleClickPrevButton}
-          handleClickFirstButton={handleClickFirstButton}
-          handleClickLastButton={handleClickLastButton}
-        />
-      )}
-    </>
+    // questionList가 없을 때 로딩 표시
+    questionList && questionList.length === 0 ? (
+      <LoadingCircle />
+    ) : (
+      <>
+        <Bar>
+          <Search src="../../../svg/search.svg" />
+          <InputBar placeholder="검색어를 입력해주세요." maxLength={20} />
+        </Bar>
+        <ButtonBox>
+          <Button onClick={handleClickWritePostButton}>글쓰기</Button>
+        </ButtonBox>
+        <QuestionList questionList={questionList} />
+        {totalCount && totalCount > 0 && (
+          <Pagination
+            maxLink={maxLink}
+            totalLink={totalCount}
+            createOnClickLinkHandler={createOnClickLinkHandler}
+            currentPage={currentPage}
+            maxRows={maxRows}
+            handleClickNextButton={handleClickNextButton}
+            handleClickPrevButton={handleClickPrevButton}
+            handleClickFirstButton={handleClickFirstButton}
+            handleClickLastButton={handleClickLastButton}
+          />
+        )}
+      </>
+    )
   );
 };
 

@@ -4,17 +4,13 @@ import { useEffect, useState } from "react";
 import { getQuestion } from "../../api/post";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-
-const urlTransform = (url, key, node) => {
-  return url; // URL을 그대로 반환
-};
+import LoadingCircle from "../../components_v2/presentaions/common/LoadingCircle";
 
 const QuestionBox = styled.div`
   flex: 1;
   padding: 5rem 2rem;
-  border-left: 1px solid #d8d8d8;
-  border-right: 1px solid #d8d8d8;
   background-color: #ffffff;
+  position: relative;
 
   h1 {
     font-size: 2.5rem; /* 기본 크기 */
@@ -123,9 +119,128 @@ const QuestionTitleBox = styled.h1`
 `;
 
 const QuestionMetaDataBox = styled.div`
+  margin-top: 2rem;
+  margin-bottom: 2rem;
   display: flex;
   justify-content: space-between;
 `;
+
+const StickBox = styled.div`
+  position: sticky; /* absolute 대신 sticky 사용 */
+  top: 5rem; /* 상단 여백 조정 */
+  left: 0;
+  transform: translateX(-10rem); /* 왼쪽으로 5vw만큼 이동 */
+  width: 3rem;
+  height: 9rem;
+  background-color: #f0f0f0;
+  border: transparent;
+  border-radius: 2.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+`;
+
+const SideBarButton = styled.div`
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  outline: none;
+  width: 3rem;
+  height: 3rem;
+  background-color: #ffffff;
+  color: #8e8e8e;
+  cursor: pointer;
+
+  &:hover {
+    color: #000000;
+    border: 1px solid black;
+  }
+`;
+
+const InformationBox = styled.div`
+  font-size: 1.5rem;
+  display: flex;
+`;
+
+const NameBox = styled.div`
+  font-weight: bold;
+  cursor: pointer;
+`;
+
+// 새로운 스타일 컴포넌트 추가
+const Dot = styled.div`
+  margin: 0 0.5rem; /* 좌우 여백 추가 */
+  /* 또는 padding: 0 0.5rem; */
+`;
+
+const CommentBox = styled.div`
+  margin-top: 5rem;
+  display: flex;
+  flex-direction: column;
+`;
+const CommentTitle = styled.div`
+  font-size: 1.5rem;
+  font-weight: bold;
+`;
+
+const CommentInput = styled.textarea`
+  margin: 1rem 0;
+  min-height: 4.5rem; /* 3줄 기준 (1.5rem * 3) */
+  resize: vertical; /* 수직으로만 크기 조절 가능 */
+  padding: 0.5rem;
+  line-height: 1.5;
+  width: 100%;
+  border: 1px solid #d8d8d8;
+  border-radius: 4px;
+  resize: none;
+
+  &:focus {
+    outline: none;
+    border-color: #555;
+  }
+`;
+
+const CommentButtonBox = styled.div`
+  display: flex;
+  justify-content: end;
+`;
+
+const CommentSubmitButton = styled.button`
+  border: none;
+  background-color: #246beb;
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  color: white;
+  font-weight: bold;
+  font-size: 1.5rem;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #1D56BC;
+  }
+
+  &:active {
+    background-color: #16408D;
+  }
+`;
+
+// 파일 상단에 함수 추가
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}년 ${month}월 ${day}일`;
+};
+
+const urlTransform = (url, key, node) => {
+  return url; // URL을 그대로 반환
+};
 
 const QuestionPage = () => {
   const { id } = useParams();
@@ -144,23 +259,51 @@ const QuestionPage = () => {
       });
   }, [id]);
 
-  const AuthorBox = styled.div`
-  
-  `
-
-  const UploadDateBox = styled.div`
-    
-  `
-
-  return (
+  return question ? (
     <QuestionBox>
       <QuestionHeaderBox>
         <QuestionTitleBox>{question.title}</QuestionTitleBox>
         <QuestionMetaDataBox>
-          <div>{question.author.name}</div>
-          <div>hi</div>
+          <InformationBox>
+            <NameBox>{question.author.name}</NameBox>
+            <Dot>·</Dot>
+            <div>{formatDate(question.createdAt)}</div>
+          </InformationBox>
+          <div> 수정/삭제/// 팔로우</div>
         </QuestionMetaDataBox>
       </QuestionHeaderBox>
+      <StickBox>
+        <SideBarButton>
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill="currentColor"
+              d="M18 1l-6 4-6-4-6 5v7l12 10 12-10v-7z"
+            />
+          </svg>
+        </SideBarButton>
+        <div>5</div>
+        <SideBarButton>
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+            role="img"
+          >
+            <path
+              fill="currentColor"
+              d="M5 7c2.761 0 5 2.239 5 5s-2.239 5-5 5-5-2.239-5-5 2.239-5 5-5zm11.122 12.065c-.073.301-.122.611-.122.935 0 2.209 1.791 4 4 4s4-1.791 4-4-1.791-4-4-4c-1.165 0-2.204.506-2.935 1.301l-5.488-2.927c-.23.636-.549 1.229-.943 1.764l5.488 2.927zm7.878-15.065c0-2.209-1.791-4-4-4s-4 1.791-4 4c0 .324.049.634.122.935l-5.488 2.927c.395.535.713 1.127.943 1.764l5.488-2.927c.731.795 1.77 1.301 2.935 1.301 2.209 0 4-1.791 4-4z"
+            />
+          </svg>
+        </SideBarButton>
+      </StickBox>
       <Markdown
         remarkPlugins={[remarkGfm]}
         components={{
@@ -178,9 +321,19 @@ const QuestionPage = () => {
         }}
         urlTransform={urlTransform}
       >
-        {question && question.body}
+        {question.body}
       </Markdown>
+      {/* 여기에 velog처럼 사진 유저이름 팔로우 */}
+      <CommentBox>
+        <CommentTitle>{0}개의 댓글</CommentTitle>
+        <CommentInput placeholder="댓글을 작성해 보세요" />
+        <CommentButtonBox>
+          <CommentSubmitButton>댓글 작성</CommentSubmitButton>
+        </CommentButtonBox>
+      </CommentBox>
     </QuestionBox>
+  ) : (
+    <LoadingCircle />
   );
 };
 
