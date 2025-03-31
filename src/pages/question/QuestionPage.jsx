@@ -5,6 +5,8 @@ import { getQuestion } from "../../api/post";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import LoadingCircle from "../../components_v2/presentaions/common/LoadingCircle";
+import Comment from "../../components_v2/presentaions/question/Comment";
+import { addComment } from "../../api/post";
 
 const QuestionBox = styled.div`
   flex: 1;
@@ -216,16 +218,20 @@ const CommentSubmitButton = styled.button`
   padding: 0.5rem 1rem;
   color: white;
   font-weight: bold;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   cursor: pointer;
 
   &:hover {
-    background-color: #1D56BC;
+    background-color: #1d56bc;
   }
 
   &:active {
-    background-color: #16408D;
+    background-color: #16408d;
   }
+`;
+
+const CommentListBox = styled.div`
+  margin-top: 2rem;
 `;
 
 // 파일 상단에 함수 추가
@@ -245,19 +251,40 @@ const urlTransform = (url, key, node) => {
 const QuestionPage = () => {
   const { id } = useParams();
   const [question, setQuestion] = useState(undefined);
+  const [comments, setComments] = useState(undefined);
+  const [commentInput, setCommentInput] = useState("");
 
   const navigate = useNavigate();
   useEffect(() => {
     getQuestion(id)
       .then((result) => {
-        console.log(result.data);
-        setQuestion(result.data);
+        const { comments, ...questionData } = result.data; // 구조 분해 할당 사용
+        setQuestion(questionData);
+        setComments(comments);
       })
       .catch(() => {
         alert("삭제되었거나 존재하지 않는 게시물 입니다.");
         navigate(-1);
       });
   }, [id]);
+
+  // 댓글 제출 시
+  const handleClickSubmitComment = async () => {
+    //
+    try {
+      const result = await addComment(id,commentInput);
+      console.log(result.data);
+      setComments((prev) => [...prev, result.data])
+      setCommentInput("");
+    } catch (error) {
+      alert("서버에서 오류가 발생하였습니다. 나중에 다시 시도해 주세요.");
+    }
+  };
+
+  // 댓글 입력시
+  const handleChangeComment = (e) => {
+    setCommentInput(e.target.value);
+  };
 
   return question ? (
     <QuestionBox>
@@ -325,11 +352,22 @@ const QuestionPage = () => {
       </Markdown>
       {/* 여기에 velog처럼 사진 유저이름 팔로우 */}
       <CommentBox>
-        <CommentTitle>{0}개의 댓글</CommentTitle>
-        <CommentInput placeholder="댓글을 작성해 보세요" />
+        <CommentTitle>{comments.length}개의 댓글</CommentTitle>
+        <CommentInput
+          placeholder="댓글을 작성해 보세요"
+          value={commentInput}
+          onChange={handleChangeComment}
+        />
         <CommentButtonBox>
-          <CommentSubmitButton>댓글 작성</CommentSubmitButton>
+          <CommentSubmitButton onClick={handleClickSubmitComment}>댓글 작성</CommentSubmitButton>
         </CommentButtonBox>
+        <CommentListBox>
+          {comments &&
+            comments.length > 0 &&
+            comments.map((comment) => (
+              <Comment key={comment.id} comment={comment} />
+            ))}
+        </CommentListBox>
       </CommentBox>
     </QuestionBox>
   ) : (
