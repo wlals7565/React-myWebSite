@@ -47,3 +47,10 @@ export const addAnswer = async (postId, body) => {
     { withCredentials: true }
   );
 };
+
+export const deletePost = async (postId) => {
+  return await client.delete(
+    `/posts/${postId}`,
+    { withCredentials: true}
+  )
+}

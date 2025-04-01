@@ -17,6 +17,7 @@ import { checkAuthStatus } from "./api/auth";
 import WriteQuestionPage from "./pages/writequestion/WriteQuestionPage";
 import PlayPage from "./pages/play/PlayPage";
 import QuestionPage from "./pages/question/QuestionPage";
+import ProfilePages from "./pages/profile/ProfilePages";
 
 const GlobalStyle = createGlobalStyle`
   ${reset}
@@ -60,6 +61,7 @@ function App() {
               <Route path="/Questions/:id" element={<QuestionPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
+              <Route path="/Profiles/:username" element={<ProfilePages />} />
               <Route path="/Chat" element={<ChatPage />} />
               <Route path="/Calendar" element={<CalendarPage />} />
               <Route path="/play" element={<PlayPage />} />

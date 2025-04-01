@@ -67,6 +67,10 @@ const MediumUtilityMenu = () => {
     logout(initUser)
   }
 
+  const handleClickMyProfile = () => {
+    navigate(`/profiles/${user.username}`)
+  }
+
 
 
   return (
@@ -77,7 +81,7 @@ const MediumUtilityMenu = () => {
       <UtilityMenuBox>
         {user.email ? (
           <>
-            <MenuBox onClick={handleClickLogin}>
+            <MenuBox onClick={handleClickMyProfile}>
               <Icon src="../../../svg/userinfo.svg" />
               계정정보
             </MenuBox>

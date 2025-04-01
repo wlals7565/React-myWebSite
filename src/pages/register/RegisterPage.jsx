@@ -15,7 +15,7 @@ const RegisterBox = styled.div`
   border: 1px solid #8e8e8e;
   width: 50vw;
   margin: 1rem auto;
-  background-color: #F0F0F0;
+  background-color: #ffffff;
 `;
 
 const InputBox = styled.div`

@@ -9,6 +9,7 @@ export const client = axios.create({
     "Content-Type": "application/json",
     "ngrok-skip-browser-warning": "anyThing",
   },
+  withCredentials: true,
 });
 
 export const baseClient = axios.create({

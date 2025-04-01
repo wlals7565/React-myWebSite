@@ -55,6 +55,7 @@ const LoginButton = styled.button`
   color: white;
   padding: 0.5rem 0;
   margin-bottom: 2rem;
+  cursor: pointer;
 
   &:hover {
     background-color: #1F53CC;

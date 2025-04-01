@@ -10,7 +10,7 @@ export const login = async (
     const { data } = await client.post("/auth/login", credentials, {
       withCredentials: true,
     });
-    callbackfn({ email: data.email, username: data.name, id: data.uuid });
+    callbackfn({ email: data.email, username: data.name, id: data.uuid, image: data.image });
     afterLoginSuccessfn();
   } catch (error) {
     if (error.response) {
@@ -80,7 +80,8 @@ export const checkAuthStatus = async (callbackfn) => {
     if(!data.email) {
       return;
     }
-    callbackfn({ email: data.email, username: data.username, id: data.uuid });
+    console.log(data)
+    callbackfn({ email: data.email, username: data.name, id: data.uuid, image: data.image });
   } catch (error) {
     console.error(error);
   }

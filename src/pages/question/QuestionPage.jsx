@@ -1,12 +1,14 @@
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { getQuestion } from "../../api/post";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import LoadingCircle from "../../components_v2/presentaions/common/LoadingCircle";
 import Comment from "../../components_v2/presentaions/question/Comment";
 import { addComment } from "../../api/post";
+import UserContext from "../../contexts/user/UserContext";
+import { deletePost } from "../../api/post";
 
 const QuestionBox = styled.div`
   flex: 1;
@@ -234,6 +236,24 @@ const CommentListBox = styled.div`
   margin-top: 2rem;
 `;
 
+const ButtonBox = styled.div`
+  display: flex;
+`;
+
+const TextButton = styled.button`
+  border: none;
+  cursor: pointer;
+  margin-right: 2rem;
+  color: #868e96;
+  background-color: transparent;
+  font-size: 1.2rem;
+  font-weight: bold;
+
+  &:hover {
+    color: #000000;
+  }
+`;
+
 // 파일 상단에 함수 추가
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -253,6 +273,7 @@ const QuestionPage = () => {
   const [question, setQuestion] = useState(undefined);
   const [comments, setComments] = useState(undefined);
   const [commentInput, setCommentInput] = useState("");
+  const { user } = useContext(UserContext);
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -272,9 +293,9 @@ const QuestionPage = () => {
   const handleClickSubmitComment = async () => {
     //
     try {
-      const result = await addComment(id,commentInput);
+      const result = await addComment(id, commentInput);
       console.log(result.data);
-      setComments((prev) => [...prev, result.data])
+      setComments((prev) => [...prev, result.data]);
       setCommentInput("");
     } catch (error) {
       alert("서버에서 오류가 발생하였습니다. 나중에 다시 시도해 주세요.");
@@ -284,6 +305,18 @@ const QuestionPage = () => {
   // 댓글 입력시
   const handleChangeComment = (e) => {
     setCommentInput(e.target.value);
+  };
+
+  // 포스트 삭제 요청
+  // 삭제 요청시 이전 페이지로 돌아감
+  const handleClickDeleteButton = async () => {
+    try {
+      const result = await deletePost(id);
+      alert(result.data.message)
+      navigate(-1)
+    } catch (error) {
+      alert("서버에서 오류가 발생하였습니다. 나중에 다시 시도해 주세요.");
+    }
   };
 
   return question ? (
@@ -296,7 +329,14 @@ const QuestionPage = () => {
             <Dot>·</Dot>
             <div>{formatDate(question.createdAt)}</div>
           </InformationBox>
-          <div> 수정/삭제/// 팔로우</div>
+          {user.username === question.author.name ? (
+            <ButtonBox>
+              <TextButton>수정</TextButton>
+              <TextButton onClick={handleClickDeleteButton}>삭제</TextButton>
+            </ButtonBox>
+          ) : (
+            <div>팔로우 버튼</div>
+          )}
         </QuestionMetaDataBox>
       </QuestionHeaderBox>
       <StickBox>
@@ -359,7 +399,9 @@ const QuestionPage = () => {
           onChange={handleChangeComment}
         />
         <CommentButtonBox>
-          <CommentSubmitButton onClick={handleClickSubmitComment}>댓글 작성</CommentSubmitButton>
+          <CommentSubmitButton onClick={handleClickSubmitComment}>
+            댓글 작성
+          </CommentSubmitButton>
         </CommentButtonBox>
         <CommentListBox>
           {comments &&
