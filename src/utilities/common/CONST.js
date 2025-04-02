@@ -1,0 +1,1 @@
+export const ProfileImageURL = import.meta.env.VITE_API_URL + "/static/images";

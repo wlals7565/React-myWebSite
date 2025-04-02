@@ -3,6 +3,7 @@ import styled from "styled-components";
 import UserContext from "../../../contexts/user/UserContext";
 import { logout } from "../../../api/auth";
 import { useContext } from "react";
+import { ProfileImageURL } from "../../../utilities/common/CONST";
 
 const LogoAndUtilityMenuBox = styled.div`
   margin: 1rem 22.5rem 0;
@@ -71,6 +72,7 @@ const MediumUtilityMenu = () => {
     navigate(`/profiles/${user.username}`)
   }
 
+  console.log(user)
 
 
   return (
@@ -82,7 +84,7 @@ const MediumUtilityMenu = () => {
         {user.email ? (
           <>
             <MenuBox onClick={handleClickMyProfile}>
-              <Icon src="../../../svg/userinfo.svg" />
+              <Icon src={`${ProfileImageURL}/${user.image}.png`} />
               계정정보
             </MenuBox>
             <MenuBox onClick={handleClickLogout}>

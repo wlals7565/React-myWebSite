@@ -31,6 +31,7 @@ const CommentDateBox = styled.div`
 `;
 
 const CommentBody = styled.div`
+  padding-left: 1rem;
   margin: 1rem 0;
   font-size: 1.2rem;
 `;
@@ -40,7 +41,11 @@ const UserProfileImage = styled.img`
   height: 4rem;
   border-radius: 50%;
   border: none;
+  object-fit: cover;
+  object-position: center;
 `
+
+const ProfileImageURL = import.meta.env.VITE_API_URL + "/static/images";
 
 const Comment = ({ comment }) => {
   return (
@@ -48,7 +53,7 @@ const Comment = ({ comment }) => {
       <CommentInfo>
         <UserProfileImageBox>
           <UserProfileImage
-            src="https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?d=identicon"
+            src={`${ProfileImageURL}/${comment.author.name}/${comment.author.image}.png`}
             alt="Gravatar Image"
           />
         </UserProfileImageBox>

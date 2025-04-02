@@ -268,6 +268,7 @@ const urlTransform = (url, key, node) => {
   return url; // URL을 그대로 반환
 };
 
+
 const QuestionPage = () => {
   const { id } = useParams();
   const [question, setQuestion] = useState(undefined);

@@ -41,11 +41,15 @@ export const uploadAvatar = async (username, avatar, callbackfn) => {
   }
 };
 
-export const pathProfileAboutMe = async (aboutMe, username) => {
+export const patchProfileAboutMe = async (aboutMe, username) => {
   try {
-    const { data } = await client.patch(`/profiles/${username}`, {aboutMe}, {
-      withCredentials: true,
-    });
+    await client.patch(
+      `/profiles/${username}/aboutMe`,
+      { aboutMe },
+      {
+        withCredentials: true,
+      }
+    );
   } catch (error) {
     console.error(error);
   }

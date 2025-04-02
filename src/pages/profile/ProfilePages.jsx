@@ -4,6 +4,8 @@ import { useContext, useEffect, useState } from "react";
 import UserContext from "../../contexts/user/UserContext";
 import { getUserInfo } from "../../api/user";
 import LoadingCircle from "../../components_v2/presentaions/common/LoadingCircle";
+import { patchProfileAboutMe } from "../../api/profile";
+import { changeImageToDefault } from "../../api/user";
 
 // 프로필 소개 박스
 // 프로필 소개 수정 버튼
@@ -31,6 +33,8 @@ const Image = styled.img`
   border-radius: 50%;
   border: none;
   margin-bottom: 2rem;
+  object-fit: cover;
+  object-position: center;
 `;
 
 const Button = styled.button`
@@ -65,15 +69,10 @@ const UserNameBox = styled.div`
   margin-bottom: 1rem;
 `;
 
-const UserNameEditInput = styled.input`
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-`;
-
 const IntroBox = styled.div`
   color: #555555;
   flex: 1;
+  white-space: pre-wrap;
 `;
 
 const IntroEditTextarea = styled.textarea`
@@ -93,18 +92,56 @@ const ProfilePages = () => {
   const { user } = useContext(UserContext);
   const [userProfile, setUserProfile] = useState(undefined);
   const [editMode, setEditMode] = useState(false);
+  const [editedAboutMe, setEditedAboutMe] = useState("");
+  const [isSaving, setSaving] = useState(false);
 
   const navigate = useNavigate();
   const ProfileImageURL = import.meta.env.VITE_API_URL + "/static/images";
 
+  // 자기소개 수정 버튼 클릭
   const handleClickEdit = () => {
     setEditMode((prev) => !prev);
+    setEditedAboutMe(userProfile.profile.aboutMe);
   };
 
-  const handleClickSave = () => {
-    setEditMode((prev) => !prev);
+  // 자기소개 수정 시
+  const handleAboutMeChange = (e) => {
+    setEditedAboutMe(e.target.value);
   };
 
+  // 자기소개 저장 버튼 클릭
+  const handleClickSave = async () => {
+    if (editedAboutMe === userProfile.profile.aboutMe) {
+      // 변경사항이 없으면 그냥 수정 모드 종료
+      setEditMode(false);
+      return;
+    }
+
+    try {
+      setSaving(true);
+      // 서버에 수정된 aboutMe 저장 요청
+      await patchProfileAboutMe(editedAboutMe, username);
+
+      // 성공적으로 저장되면 userProfile 상태 업데이트
+      setUserProfile({
+        ...userProfile,
+        profile: {
+          ...userProfile.profile,
+          aboutMe: editedAboutMe,
+        },
+      });
+
+      // 수정 모드 종료
+      setEditMode(false);
+    } catch (error) {
+      console.error("프로필 저장 중 오류 발생:", error);
+      alert("프로필 저장에 실패했습니다. 다시 시도해주세요.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // 해당 유저 정보 가져오기
   useEffect(() => {
     getUserInfo(username)
       .then(({ data }) => setUserProfile(data))
@@ -114,16 +151,29 @@ const ProfilePages = () => {
       });
   }, []);
 
+  // 기본 이미지 클릭시
+  const clickDefaultImage = async () => {
+    try {
+      await changeImageToDefault();
+      setUserProfile((prev) => ({
+        ...prev,
+        image: "default"
+      }))
+    } catch (error) {
+      alert("서버 오류로 인해 기본 이미지로 변경하지 못 하였습니다.");
+    }
+  };
+
   return (
     <>
       {userProfile ? (
         <ProfileBox>
           <ImageBox>
-            <Image src={`${ProfileImageURL}/${userProfile.image}.png`} />
+            <Image src={`${ProfileImageURL}/${userProfile.name}/${userProfile.image}.png`} />
             {username === user.username ? (
               <>
                 <Button>이미지 업로드</Button>
-                <Button>기본 이미지</Button>
+                <Button onClick={clickDefaultImage}>기본 이미지로 변경</Button>
               </>
             ) : (
               <></>
@@ -132,8 +182,11 @@ const ProfilePages = () => {
           <UserInfoBox>
             {editMode ? (
               <>
-              <UserNameBox>{userProfile.name}</UserNameBox>
-              <IntroEditTextarea value={userProfile.profile.aboutMe} />
+                <UserNameBox>{userProfile.name}</UserNameBox>
+                <IntroEditTextarea
+                  onChange={handleAboutMeChange}
+                  value={editedAboutMe}
+                />
               </>
             ) : (
               <>
@@ -144,7 +197,9 @@ const ProfilePages = () => {
             {username === user.username ? (
               <ButtonBox>
                 {editMode ? (
-                  <Button onClick={handleClickSave}>저장</Button>
+                  <Button onClick={handleClickSave} disabled={isSaving}>
+                    {isSaving ? "저장 중..." : "저장"}
+                  </Button>
                 ) : (
                   <Button onClick={handleClickEdit}>수정</Button>
                 )}
