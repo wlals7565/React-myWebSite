@@ -29,6 +29,15 @@ const Icon = styled.img`
   margin-right: 0.5rem;
 `;
 
+const UserProfileIcon = styled.img`
+  height: 1.5rem;
+  margin-right: 0.5rem;
+  width: 1.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+`
+
 const UtilityMenuBox = styled.div`
   display: flex;
   align-items: center;
@@ -84,7 +93,7 @@ const MediumUtilityMenu = () => {
         {user.email ? (
           <>
             <MenuBox onClick={handleClickMyProfile}>
-              <Icon src={`${ProfileImageURL}/${user.image}.png`} />
+              <UserProfileIcon src={`${ProfileImageURL}/${user.username}/${user.image}.png`} />
               계정정보
             </MenuBox>
             <MenuBox onClick={handleClickLogout}>

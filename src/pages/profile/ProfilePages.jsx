@@ -1,11 +1,11 @@
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import UserContext from "../../contexts/user/UserContext";
 import { getUserInfo } from "../../api/user";
 import LoadingCircle from "../../components_v2/presentaions/common/LoadingCircle";
 import { patchProfileAboutMe } from "../../api/profile";
-import { changeImageToDefault } from "../../api/user";
+import { changeImageToDefault, uploadUserProfileImage } from "../../api/user";
 
 // 프로필 소개 박스
 // 프로필 소개 수정 버튼
@@ -56,6 +56,10 @@ const Button = styled.button`
   }
 `;
 
+const HiddenInput = styled.input`
+  display: none;
+`;
+
 const UserInfoBox = styled.div`
   display: flex;
   flex-direction: column;
@@ -89,11 +93,12 @@ const ButtonBox = styled.div`
 
 const ProfilePages = () => {
   const { username } = useParams();
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const [userProfile, setUserProfile] = useState(undefined);
   const [editMode, setEditMode] = useState(false);
   const [editedAboutMe, setEditedAboutMe] = useState("");
   const [isSaving, setSaving] = useState(false);
+  const fileInputRef = useRef(null);
 
   const navigate = useNavigate();
   const ProfileImageURL = import.meta.env.VITE_API_URL + "/static/images";
@@ -151,16 +156,39 @@ const ProfilePages = () => {
       });
   }, []);
 
-  // 기본 이미지 클릭시
+  // 기본 이미지로 변경 클릭시
   const clickDefaultImage = async () => {
     try {
       await changeImageToDefault();
-      setUserProfile((prev) => ({
-        ...prev,
-        image: "default"
-      }))
+      window.location.reload();
     } catch (error) {
       alert("서버 오류로 인해 기본 이미지로 변경하지 못 하였습니다.");
+    }
+  };
+
+  // 업로드 이미지 클릭시
+  const handleUploadImageClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  // 이미지 변경시
+  // 파일 선택 시 실행될 핸들러
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      // 서버로 이미지 업로드 요청
+      await uploadUserProfileImage(formData); // 업로드 API 호출
+      window.location.reload();
+
+    } catch (error) {
+      alert("이미지 업로드에 실패했습니다.");
     }
   };
 
@@ -169,11 +197,21 @@ const ProfilePages = () => {
       {userProfile ? (
         <ProfileBox>
           <ImageBox>
-            <Image src={`${ProfileImageURL}/${userProfile.name}/${userProfile.image}.png`} />
+            <Image
+              src={`${ProfileImageURL}/${userProfile.name}/${userProfile.image}.png`}
+            />
             {username === user.username ? (
               <>
-                <Button>이미지 업로드</Button>
+                <Button onClick={handleUploadImageClick} type="file">
+                  이미지 업로드
+                </Button>
                 <Button onClick={clickDefaultImage}>기본 이미지로 변경</Button>
+                <HiddenInput
+                  type="file"
+                  accept="image/*"
+                  ref={fileInputRef}
+                  onChange={handleImageUpload}
+                />
               </>
             ) : (
               <></>

@@ -355,6 +355,7 @@ const ExitButton = styled.button`
   align-items: center;
   background-color: transparent;
   font-size: 1.5rem;
+  cursor: pointer;
 `;
 
 const PostButton = styled.button`
@@ -364,6 +365,7 @@ const PostButton = styled.button`
   color: #ffffff;
   padding: 0.5rem 1rem;
   font-size: 1.5rem;
+  cursor: pointer;
 
   &:hover {
     background-color: #1d56bc;
