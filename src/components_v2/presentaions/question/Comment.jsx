@@ -3,6 +3,7 @@ import { formatDate } from "../../../utilities/data";
 import { useContext } from "react";
 import UserContext from "../../../contexts/user/UserContext";
 import { useState } from "react";
+import PropTypes from "prop-types";
 
 const CommentBox = styled.div`
   border-bottom: 1px solid #ccc8c8;
@@ -63,6 +64,7 @@ const Button = styled.button`
   border-radius: 10px;
   margin-right: 1rem;
   cursor: pointer;
+  height: fit-content;
 
   &:hover {
     background-color: #f0f0f0;
@@ -161,6 +163,25 @@ const Comment = ({ comment, onDeleteComment, onUpdateComment }) => {
       )}
     </CommentBox>
   );
+};
+
+Comment.propTypes = {
+  comment: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    body: PropTypes.string.isRequired,
+    createdAt: PropTypes.string.isRequired,
+    updatedAt: PropTypes.string.isRequired,
+    deletedAt: PropTypes.string,
+    author: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      image: PropTypes.string.isRequired,
+      email: PropTypes.string.isRequired,
+    }).isRequired,
+    recommendations: PropTypes.arrayOf(PropTypes.object).isRequired,
+  }).isRequired,
+  onDeleteComment: PropTypes.func.isRequired,
+  onUpdateComment: PropTypes.func.isRequired,
 };
 
 export default Comment;
