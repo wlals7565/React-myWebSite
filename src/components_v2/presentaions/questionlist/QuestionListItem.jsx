@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router";
+import dayjs from "dayjs";
 
 const UserLink = styled.a`
   color: #3ca4ff;
@@ -100,7 +101,7 @@ const QuestionListItem = ({ question }) => {
           <span>추천수</span>
         </QuestionStats>
         <QuestionStats>
-          {question.answerCount}
+          {question.commentCount}
           <span>답변수</span>
         </QuestionStats>
         <QuestionStats>
@@ -119,8 +120,7 @@ const QuestionListItem = ({ question }) => {
         </TagBox>
       </QuestionBodyBox>
       <WhoAndWhen>
-        {" "}
-        10 분 전{" "}
+        {dayjs(question.createdAt).format("YYYY년 MM월 DD일 HH시 mm분")}
         <UserLink>{question.author?.name || "unknown"}</UserLink>
       </WhoAndWhen>
     </ItemBox>
@@ -131,10 +131,11 @@ QuestionListItem.propTypes = {
   question: PropTypes.shape({
     id: PropTypes.string.isRequired,
     votes: PropTypes.array.isRequired,
-    answerCount: PropTypes.number.isRequired,
+    commentCount: PropTypes.number.isRequired,
     tags: PropTypes.arrayOf(PropTypes.string),
     views: PropTypes.number.isRequired,
     title: PropTypes.string.isRequired,
+    createdAt: PropTypes.string.isRequired,
     author: PropTypes.shape({
       id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,

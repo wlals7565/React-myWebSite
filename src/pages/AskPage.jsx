@@ -395,7 +395,7 @@ const AskPage = () => {
       alert("성공적으로 게시글이 올라갔습니다.");
       naviage("/");
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

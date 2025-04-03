@@ -30,18 +30,16 @@ const QuestionsContainer = () => {
     // 마지막 페이지에서는 이유가 없다.
     const maxPage = Math.floor((totalCount - 1) / maxRows) + 1;
     if (currentPage <= maxPage && maxPage - (maxPage % maxLink) < currentPage)
-      return console.log("next");
+      return;
     const page = (Math.floor((currentPage - 1) / maxLink) + 1) * 5 + 1;
-    console.log(page);
     setParams((prev) => ({ ...prev, skip: prev.limit * (page - 1) }));
     setCurrentPage(page);
   };
 
   const handleClickPrevButton = () => {
     // 첫 페이지에서는 작동할 이유가 없다.
-    if (currentPage >= 1 && currentPage <= maxLink) return console.log("prev");
-    const page = (Math.floor((currentPage - 1) / maxLink) - 1) * 5 + 1;
-    console.log(page);
+    if (currentPage >= 1 && currentPage <= maxLink) return;
+    const page = (Math.floor((currentPage - 1) / maxLink) - 1) * 5 + 1;;
     setParams((prev) => ({ ...prev, skip: prev.limit * (page - 1) }));
     setCurrentPage(page);
   };
@@ -65,7 +63,7 @@ const QuestionsContainer = () => {
         setQuestions(data.posts);
         setTotalCount(Number(data.totalCount));
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.error(error));
   }, [params, keyword]);
 
   useEffect(() => {

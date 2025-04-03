@@ -38,8 +38,6 @@ const CommentsContainer = ({ initialState, questionId }) => {
   };
   // 작성한 comment를 게시하는 기능
   const handleClickPostCommentButton = () => {
-    console.log(questionId)
-    console.log(commentBody)
     addComment(questionId, commentBody).then(({ data }) => {
       setCommentBody("");
       setShowAddCommentForm(false);

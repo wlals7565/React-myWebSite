@@ -54,3 +54,7 @@ export const deletePost = async (postId) => {
     { withCredentials: true}
   )
 }
+
+export const updatePost = async (postId, updatePostDto) => {
+  return await client.patch(`/posts/${postId}`, updatePostDto)
+}

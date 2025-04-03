@@ -80,7 +80,6 @@ export const checkAuthStatus = async (callbackfn) => {
     if(!data.email) {
       return;
     }
-    console.log(data)
     callbackfn({ email: data.email, username: data.name, id: data.uuid, image: data.image });
   } catch (error) {
     console.error(error);

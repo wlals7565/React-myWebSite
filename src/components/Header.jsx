@@ -86,7 +86,6 @@ const Header = () => {
       if( searchInput.length === 0) return;
       navigate(`?keyword=${searchInput}`)
       setSearchInput("")
-      console.log('press Enter')
     }
   }
   

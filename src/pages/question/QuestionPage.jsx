@@ -9,6 +9,7 @@ import Comment from "../../components_v2/presentaions/question/Comment";
 import { addComment } from "../../api/post";
 import UserContext from "../../contexts/user/UserContext";
 import { deletePost } from "../../api/post";
+import { deleteComment, updateComment } from "../../api/comment";
 
 const QuestionBox = styled.div`
   flex: 1;
@@ -295,7 +296,6 @@ const QuestionPage = () => {
     //
     try {
       const result = await addComment(id, commentInput);
-      console.log(result.data);
       setComments((prev) => [...prev, result.data]);
       setCommentInput("");
     } catch (error) {
@@ -308,7 +308,7 @@ const QuestionPage = () => {
     setCommentInput(e.target.value);
   };
 
-  // 포스트 삭제 요청
+  // 게시글 삭제 요청
   // 삭제 요청시 이전 페이지로 돌아감
   const handleClickDeleteButton = async () => {
     try {
@@ -317,6 +317,37 @@ const QuestionPage = () => {
       navigate(-1)
     } catch (error) {
       alert("서버에서 오류가 발생하였습니다. 나중에 다시 시도해 주세요.");
+    }
+  };
+
+  // 게시글 수정 요청
+  const handleClickUpdateButton = async () => {
+    navigate(`/WriteQuestion?id=${question.id}`)
+  }
+
+  // 댓글 수정
+  const handleUpdateComment = async (commentId, newBody) => {
+    try {
+      await updateComment(commentId, newBody)
+
+      setComments(comments.map(comment => 
+        comment.id === commentId ? { ...comment, body: newBody } : comment
+      ));
+    } catch (error) {
+      console.error("Error updating comment:", error);
+      alert("댓글 수정에 실패했습니다.");
+    }
+  };
+  
+  // 댓글 삭제
+  const handleDeleteComment = async (commentId) => {
+    try {
+      await deleteComment(commentId);
+      
+      setComments(comments.filter(comment => comment.id !== commentId));
+    } catch (error) {
+      console.error("Error deleting comment:", error);
+      alert("댓글 삭제에 실패했습니다.");
     }
   };
 
@@ -332,7 +363,7 @@ const QuestionPage = () => {
           </InformationBox>
           {user.username === question.author.name ? (
             <ButtonBox>
-              <TextButton>수정</TextButton>
+              <TextButton onClick={handleClickUpdateButton}>수정</TextButton>
               <TextButton onClick={handleClickDeleteButton}>삭제</TextButton>
             </ButtonBox>
           ) : (
@@ -408,7 +439,7 @@ const QuestionPage = () => {
           {comments &&
             comments.length > 0 &&
             comments.map((comment) => (
-              <Comment key={comment.id} comment={comment} />
+              <Comment key={comment.id} comment={comment} onDeleteComment={handleDeleteComment} onUpdateComment={handleUpdateComment}/>
             ))}
         </CommentListBox>
       </CommentBox>

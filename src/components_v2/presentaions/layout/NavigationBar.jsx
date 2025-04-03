@@ -1,7 +1,6 @@
 import styled from "styled-components";
-import LayoutContext from "../../../contexts/layout/LayoutContext";
 import { useNavigate } from "react-router";
-import { useContext } from "react";
+import { useState } from "react";
 
 const Bar = styled.div`
   margin-top: 2rem;
@@ -19,7 +18,7 @@ const MenuBar = styled.div`
 
 const Menu = styled.div`
   cursor: pointer;
-  color: #555555;
+  color: ${({ $isCurrent }) => ($isCurrent ? "#246BEB" : "#555555")};
   position: relative;
   font-size: 1rem;
   text-align: center;
@@ -33,30 +32,35 @@ const Menu = styled.div`
   }
 `;
 
+const navigations = [
+  { path: "/questionList", title: "질문 게시판" },
+  { path: "/calendar", title: "일정 관리" },
+  { path: "/chat", title: "실시간 채팅" },
+  { path: "/play", title: "심심풀이용" },
+];
+
 const NavigationBar = () => {
-  
   const navigate = useNavigate();
+  
+  // 현재 위치하는 페이지
+  const [current, setCurrent] = useState(undefined);
 
-  const handleClickCalendarMenu = () => {
-    navigate('/calendar');
-  }
 
-  const handleClickQuestionsMenu = () => {
-    navigate('/questionList')
-  }
-
-  const handleClickPlayMenu = () => {
-    navigate('/play')
-  }
+  const createNavigateHandler = (path, i) => {
+    return () => {
+      setCurrent(i);
+      navigate(path);
+    };
+  };
 
   return (
     <Bar>
       <MenuBar>
-        <Menu onClick={handleClickQuestionsMenu} style={{color: '#246BEB'}}>질문 게시판</Menu>
-        <Menu onClick= {handleClickCalendarMenu}>일정 관리</Menu>
-        <Menu>실시간 채팅 질문</Menu>
-        <Menu>태그 검색</Menu>
-        <Menu onClick={handleClickPlayMenu}>심심풀이용</Menu>
+        {navigations.map((navigation, i) => (
+          <Menu key={i}  $isCurrent={i === current} onClick={createNavigateHandler(navigation.path, i)}>
+            {navigation.title}
+          </Menu>
+        ))}
       </MenuBar>
     </Bar>
   );

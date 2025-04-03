@@ -9,7 +9,7 @@ export const checkAuth = async (callbackfn) => {
     }
     callbackfn(data);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
@@ -34,7 +34,6 @@ export const uploadAvatar = async (username, avatar, callbackfn) => {
         withCredentials: true,
       }
     );
-    console.log(data);
     callbackfn(data.imageUrl);
   } catch (error) {
     console.error(error);

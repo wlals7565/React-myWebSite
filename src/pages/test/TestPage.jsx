@@ -1,7 +1,6 @@
 import dayjs from "dayjs";
 
 const TestPage = () => {
-  console.log(dayjs().subtract(3,'month'))
   dayjs().set()
   return (
     <div style={{display: 'flex'}}>

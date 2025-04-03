@@ -81,9 +81,6 @@ const MediumUtilityMenu = () => {
     navigate(`/profiles/${user.username}`)
   }
 
-  console.log(user)
-
-
   return (
     <LogoAndUtilityMenuBox>
       <LogoBox onClick={handleClickLogoBox}>

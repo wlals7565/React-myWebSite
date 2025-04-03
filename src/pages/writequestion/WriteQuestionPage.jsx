@@ -1,12 +1,13 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import suggestions from "../../suggestions";
-import { createPost } from "../../api/post";
+import { createPost, getQuestion, updatePost } from "../../api/post";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ReactTags } from "react-tag-autocomplete";
 import { uploadImage } from "../../api/image";
+import { useSearchParams } from "react-router";
 
 const urlTransform = (url, key, node) => {
   return url; // URL을 그대로 반환
@@ -379,8 +380,22 @@ const PostButton = styled.button`
 const WriteQuestionPage = () => {
   const [questionTitle, setQuestionTitle] = useState("");
   const [questionBody, setQuestionBody] = useState("");
+  // 태그 선택된 것들
   const [selected, setSelected] = useState([]);
+  const [searchParams] = useSearchParams();
+
+  const id = searchParams.get("id");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (id) {
+      getQuestion(id).then(({ data }) => {
+        setQuestionTitle(data.title);
+        setQuestionBody(data.body);
+        setSelected(data.tags.map((tag, i) => ({ value: i, label: tag })));
+      });
+    }
+  }, []);
 
   // 태그 추가할 때
   const onAdd = useCallback(
@@ -529,11 +544,18 @@ const WriteQuestionPage = () => {
     }
     try {
       const tags = selected.map((tag) => tag.label);
+      if(id) {
+        // 게시글 수정 할 시
+        await updatePost(id, {title: questionTitle, body: questionBody, tags})
+        alert("성공적으로 게시글이 수정되었습니다.");
+        navigate(-1);
+        return;
+      }
       await createPost(questionTitle, questionBody, tags);
       alert("성공적으로 게시글이 올라갔습니다.");
-      navigate("/");
+      navigate("/QuestionList");
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -543,6 +565,7 @@ const WriteQuestionPage = () => {
         <MarkDownTitleInput
           onChange={handleChangeQuestionTitle}
           placeholder="제목을 입력하세요"
+          value={questionTitle}
         ></MarkDownTitleInput>
         <ReactTagBox>
           <ReactTags

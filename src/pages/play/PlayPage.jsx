@@ -20,7 +20,6 @@ const options = ["아코디언"]
 const PlayPage = () => {
   const { setLayout } = useContext(LayoutContext);
   const [selected, setSelected] = useState(options[0]);
-  console.log(selected)
 
   useEffect(() => {
     setLayout("wide");

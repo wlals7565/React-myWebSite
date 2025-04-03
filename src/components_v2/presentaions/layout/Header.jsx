@@ -21,15 +21,6 @@ height: 1.5rem;
 `;
 
 const Header = () => {
-  const navigate = useNavigate();
-  const { user, setUser } = useContext(UserContext);
-  const [searchInput, setSearchInput] = useState("123456");
-
-  const initUser = () => {
-    setUser({ email: "", username: "", id: "" });
-  };
-
-
 
   return (
     <header>
