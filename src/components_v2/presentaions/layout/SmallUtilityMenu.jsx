@@ -8,7 +8,7 @@ const HeadphoneImage = styled.img`
 export const UtilityMenuBox = styled.div`
 
   white-space: nowrap;
-  margin: 0.5rem 22.5rem 0;
+  margin: 0.5rem 22.5vw 0;
   display: flex;
   justify-content: right;
   align-items: center;

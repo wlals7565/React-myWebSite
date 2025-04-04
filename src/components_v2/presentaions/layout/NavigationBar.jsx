@@ -9,7 +9,7 @@ const Bar = styled.div`
 `;
 
 const MenuBar = styled.div`
-  margin: 0 22.5rem;
+  margin: 0 22.5vw;
   background-color: white;
   height: 3rem;
   display: flex;

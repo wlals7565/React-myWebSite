@@ -6,10 +6,12 @@ import { useContext } from "react";
 import { ProfileImageURL } from "../../../utilities/common/CONST";
 
 const LogoAndUtilityMenuBox = styled.div`
-  margin: 1rem 22.5rem 0;
+  margin: 1rem;
+  padding: 0 22.5vw;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  white-space: nowrap;
 `;
 
 const LogoBox = styled.div`

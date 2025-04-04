@@ -10,10 +10,11 @@ import NavigationBar from "./NavigationBar";
 
 const MastHead = styled.div`
 background-color: #d9d9d9;
-padding-left: 22.5rem;
+padding: 0 22.5rem;
 display: flex;
 align-items: center;
 font-size: 1.5rem;
+white-space: nowrap;
 `;
 
 const SmileImage = styled.img`

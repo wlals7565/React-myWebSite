@@ -10,6 +10,9 @@ import { addComment } from "../../api/post";
 import UserContext from "../../contexts/user/UserContext";
 import { deletePost } from "../../api/post";
 import { deleteComment, updateComment } from "../../api/comment";
+import { voteToPost } from "../../api/post";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const QuestionBox = styled.div`
   flex: 1;
@@ -152,12 +155,13 @@ const SideBarButton = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  border: none;
+  border: ${({$voteState}) => $voteState ? "1px solid #A1F524" : 'none'};
   outline: none;
   width: 3rem;
   height: 3rem;
   background-color: #ffffff;
-  color: #8e8e8e;
+
+  color: ${({$voteState}) => $voteState ? "#A1F524" : '#8e8e8e'};
   cursor: pointer;
 
   &:hover {
@@ -269,6 +273,57 @@ const urlTransform = (url, key, node) => {
   return url; // URL을 그대로 반환
 };
 
+const VoteBox = styled.div`
+  font-size: 1.2rem;
+`;
+
+const TagBox = styled.div`
+  display: flex;
+`;
+const TagButton = styled.button`
+  color: black;
+  padding: 0.5rem;
+  background-color: #f0f0f0;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  margin-right: 1rem;
+  cursor: pointer;
+  height: fit-content;
+  font-size: 1.2rem;
+
+  &:hover {
+    background-color: #e4e4e4;
+  }
+
+  &:active {
+    background-color: #d8d8d8;
+  }
+`;
+
+const FollowButton = styled.button`
+  border-radius: 20px;
+  cursor: pointer;
+  margin-right: 2rem;
+  border: none;
+  background-color: #f0f0f0;
+  padding: 0.5rem 1rem;
+  color: #84E184;
+  font-size: 1.2rem;
+  font-weight: bold;
+
+  &:hover {
+    background-color: #e4e4e4;
+  }
+
+  &:active {
+    background-color: #d8d8d8;
+  }
+`
+
+const checkVoteState = (votes, username) => {
+  return votes.some((vote) => vote.voter.name === username)
+}
 
 const QuestionPage = () => {
   const { id } = useParams();
@@ -276,6 +331,7 @@ const QuestionPage = () => {
   const [comments, setComments] = useState(undefined);
   const [commentInput, setCommentInput] = useState("");
   const { user } = useContext(UserContext);
+  console.log(question);
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -313,8 +369,8 @@ const QuestionPage = () => {
   const handleClickDeleteButton = async () => {
     try {
       const result = await deletePost(id);
-      alert(result.data.message)
-      navigate(-1)
+      alert(result.data.message);
+      navigate(-1);
     } catch (error) {
       alert("서버에서 오류가 발생하였습니다. 나중에 다시 시도해 주세요.");
     }
@@ -322,37 +378,64 @@ const QuestionPage = () => {
 
   // 게시글 수정 요청
   const handleClickUpdateButton = async () => {
-    navigate(`/WriteQuestion?id=${question.id}`)
-  }
+    navigate(`/WriteQuestion?id=${question.id}`);
+  };
 
   // 댓글 수정
   const handleUpdateComment = async (commentId, newBody) => {
     try {
-      await updateComment(commentId, newBody)
+      await updateComment(commentId, newBody);
 
-      setComments(comments.map(comment => 
-        comment.id === commentId ? { ...comment, body: newBody } : comment
-      ));
+      setComments(
+        comments.map((comment) =>
+          comment.id === commentId ? { ...comment, body: newBody } : comment
+        )
+      );
     } catch (error) {
       console.error("Error updating comment:", error);
       alert("댓글 수정에 실패했습니다.");
     }
   };
-  
+
   // 댓글 삭제
   const handleDeleteComment = async (commentId) => {
     try {
       await deleteComment(commentId);
-      
-      setComments(comments.filter(comment => comment.id !== commentId));
+
+      setComments(comments.filter((comment) => comment.id !== commentId));
     } catch (error) {
       console.error("Error deleting comment:", error);
       alert("댓글 삭제에 실패했습니다.");
     }
   };
 
+  // 해당 게시글에 투표
+  const handleClickVoteButton = async () => {
+    console.log(user)
+    try {
+      const {data} = await voteToPost(id, 1);
+      if(!data) return setQuestion((prev) => ({...prev, votes: prev.votes.filter((vote)=> vote.voter.name !== user.username)})) 
+      setQuestion((prev) => ({...prev, votes: [...prev.votes,data]}))
+    } catch (error) {
+      alert("게시글 좋아요에 실패하였습니다.")
+    }
+  }
+
+  const handleClickCopyUrl = () => {
+    const currentUrl = window.location.href;
+    navigator.clipboard
+      .writeText(currentUrl)
+      .then(() => {
+        toast.success("URL이 복사되었습니다!");
+      })
+      .catch(() => {
+        toast.error("복사에 실패했습니다.");
+      });
+  };
+
   return question ? (
     <QuestionBox>
+      <ToastContainer position="top-center" autoClose={2000} />
       <QuestionHeaderBox>
         <QuestionTitleBox>{question.title}</QuestionTitleBox>
         <QuestionMetaDataBox>
@@ -367,12 +450,18 @@ const QuestionPage = () => {
               <TextButton onClick={handleClickDeleteButton}>삭제</TextButton>
             </ButtonBox>
           ) : (
-            <div>팔로우 버튼</div>
+            <FollowButton>Follow</FollowButton>
           )}
         </QuestionMetaDataBox>
+        <TagBox>
+          {question.tags.length > 0 &&
+            question.tags.map((tag, i) => (
+              <TagButton key={i}>{`#${tag}`}</TagButton>
+            ))}
+        </TagBox>
       </QuestionHeaderBox>
       <StickBox>
-        <SideBarButton>
+        <SideBarButton $voteState={checkVoteState(question.votes, user.username)} onClick={handleClickVoteButton}>
           <svg
             width="24"
             height="24"
@@ -386,8 +475,8 @@ const QuestionPage = () => {
             />
           </svg>
         </SideBarButton>
-        <div>5</div>
-        <SideBarButton>
+        <VoteBox>{question.votes.length}</VoteBox>
+        <SideBarButton onClick={handleClickCopyUrl}>
           <svg
             width="24"
             height="24"
@@ -439,7 +528,12 @@ const QuestionPage = () => {
           {comments &&
             comments.length > 0 &&
             comments.map((comment) => (
-              <Comment key={comment.id} comment={comment} onDeleteComment={handleDeleteComment} onUpdateComment={handleUpdateComment}/>
+              <Comment
+                key={comment.id}
+                comment={comment}
+                onDeleteComment={handleDeleteComment}
+                onUpdateComment={handleUpdateComment}
+              />
             ))}
         </CommentListBox>
       </CommentBox>

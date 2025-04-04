@@ -58,8 +58,8 @@ const TagBox = styled.div`
 const QuestionLink = styled.a`
   text-decoration: none;
   color: #246BEB;
-  font-size: 1.1rem;
-  margin-bottom: 10px;
+  font-size: 1.0rem;
+  margin-bottom: 1rem;
   display: block;
   cursor: pointer;
   white-space: nowrap;
@@ -76,16 +76,19 @@ const WhoAndWhen = styled.div`
   margin-bottom: 0%.5rem;
   flex-direction: column;
   justify-content: flex-end;
+  white-space: nowrap;
 `;
 
 const QuesionStateBox = styled.div`
   margin-right: 1rem;
+  display: flex;
 `;
 
 const QuestionBodyBox = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-width: 0; /* 이 속성이 중요합니다 - flexbox 오버플로우 버그 해결 */
 `;
 
 const QuestionListItem = ({ question }) => {
@@ -98,15 +101,15 @@ const QuestionListItem = ({ question }) => {
       <QuesionStateBox>
         <QuestionStats>
           {question.votes.reduce((prev, current) => prev + current.state, 0)}
-          <span>추천수</span>
+          <span style={{whiteSpace: 'nowrap'}}>추천수</span>
         </QuestionStats>
         <QuestionStats>
           {question.commentCount}
-          <span>답변수</span>
+          <span style={{whiteSpace: 'nowrap'}}>답변수</span>
         </QuestionStats>
         <QuestionStats>
           {question.views}
-          <span>조회수</span>
+          <span style={{whiteSpace: 'nowrap'}}>조회수</span>
         </QuestionStats>
       </QuesionStateBox>
       <QuestionBodyBox>
