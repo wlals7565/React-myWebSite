@@ -76,10 +76,13 @@ export const checkAuthStatus = async (callbackfn) => {
       withCredentials: true,
     });
     if (!data) {
-      return;
+      return false;
     }
     if(!data.email) {
-      return;
+      return false;
+    }
+    if(!callbackfn) {
+      return true;
     }
     callbackfn({ email: data.email, username: data.name, id: data.id, image: data.image });
   } catch (error) {

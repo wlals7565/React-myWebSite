@@ -1,9 +1,8 @@
-import React from "react";
 import styled from "styled-components";
 
 const FooterBox = styled.div`
   background-color: #d9d9d9;
-  padding-left: 22.5rem;
+  padding-left: 12.5vw;
   font-size: 1.5rem;
 `;
 

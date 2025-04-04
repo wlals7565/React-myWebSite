@@ -149,9 +149,16 @@ const ProfilePages = () => {
   // 해당 유저 정보 가져오기
   useEffect(() => {
     getUserInfo(username)
-      .then(({ data }) => setUserProfile(data))
+      .then(({ data }) => {
+        if (!data) {
+          alert("해당 이름을 사용하는 유저가 존재하지 않습니다.");
+          navigate(-1);
+          return;
+        }
+        setUserProfile(data);
+      })
       .catch(() => {
-        alert("해당 이름을 사용하는 유저가 존재하지 않습니다.");
+        alert("서버에서 오류가 발생하였습니다. 나중에 다시 시도해주세요.");
         navigate(-1);
       });
   }, []);
@@ -186,7 +193,6 @@ const ProfilePages = () => {
       // 서버로 이미지 업로드 요청
       await uploadUserProfileImage(formData); // 업로드 API 호출
       window.location.reload();
-
     } catch (error) {
       alert("이미지 업로드에 실패했습니다.");
     }

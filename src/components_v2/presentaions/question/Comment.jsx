@@ -140,7 +140,7 @@ const Comment = ({ comment, onDeleteComment, onUpdateComment }) => {
           <UserNameBox>{comment.author.name}</UserNameBox>
           <CommentDateBox>{formatDate(comment.createdAt)}</CommentDateBox>
         </CommentPublishInfo>
-        {user.uuid === comment.author.uuid ? (
+        {user.id === comment.author.id ? (
           <ButtonBox>
             {!isEditing && <Button onClick={handleEditClick}>수정</Button>}
             <Button onClick={handleDeleteClick}>삭제</Button>

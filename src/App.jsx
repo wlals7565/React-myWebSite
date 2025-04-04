@@ -69,7 +69,11 @@ function App() {
 
   // 처음 페이지 들어왔을 때 로그인 여부 확인
   useEffect(() => {
-    checkAuthStatus(setUser);
+    const syncCheckAuthStatus = async () => {
+      await checkAuthStatus(setUser);
+    }
+    syncCheckAuthStatus();
+
   }, [setUser]);
   return (
     <div>
