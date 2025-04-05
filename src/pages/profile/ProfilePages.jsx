@@ -155,6 +155,7 @@ const ProfilePages = () => {
           navigate(-1);
           return;
         }
+        console.log(data);
         setUserProfile(data);
       })
       .catch(() => {

@@ -441,43 +441,37 @@ const WriteQuestionPage = () => {
   // 본문에 사진 붙여넣을때
   const handlePaste = async (event) => {
     const items = event.clipboardData.items;
-
+  
     for (const item of items) {
       if (item.type.startsWith("image/")) {
+        event.preventDefault();
+        
         const blob = await item.getAsFile();
         const formData = new FormData();
         formData.append("file", blob);
         const blobUrl = URL.createObjectURL(blob);
-
-        const textarea = event.target;
-        const cursorPos = textarea.selectionStart; // 커서 위치
-
-        // 기존 텍스트를 분리하여 커서 위치에 이미지 삽입
-        const textBefore = textarea.value.substring(0, cursorPos);
-        const textAfter = textarea.value.substring(cursorPos);
+  
+        const cursorPos = event.target.selectionStart; // Get cursor position
+        
+        // 붙여 넣기 이후 Text 설정
+        const textBefore = questionBody.substring(0, cursorPos);
+        const textAfter = questionBody.substring(cursorPos);
         const newText = `${textBefore}![image](${blobUrl})${textAfter}`;
-
-        // 텍스트를 삽입할 때 setRangeText를 사용하여 이미지 URL 삽입
-        textarea.setRangeText(newText.substring(cursorPos, newText.length));
-
-        // 커서 위치 갱신
-        textarea.selectionStart = textarea.selectionEnd =
-          cursorPos + `![image](${blobUrl})`.length;
-
-        // 기본 붙여넣기 방지
-        event.preventDefault();
-
+        
+        // 일단 Blob URL 보여주기
+        setQuestionBody(newText);
+        
+        // 서버에 이미지 업로드 되면 URL 업데이트 하기
         uploadImage(formData).then(({ data }) => {
-          // 서버에서 받은 URL로 blob URL을 교체
           const serverApiPath = import.meta.env.VITE_API_URL;
-          const updatedText = textarea.value.replace(
-            blobUrl,
-            serverApiPath + "/" + data.imagePath.replace(/\\/g, "/")
-          );
-
-          // 교체된 텍스트를 다시 textarea에 설정
-          textarea.value = updatedText;
+          const serverUrl = serverApiPath + "/" + data.imagePath.replace(/\\/g, "/");
+          
+          // 서버로 부터 받아온 URL로 업데이트
+          setQuestionBody(prevBody => prevBody.replace(blobUrl, serverUrl));
         });
+        
+        // 이미지 한개 붙여넣기 이후 끝내기
+        break;
       }
     }
   };
@@ -488,46 +482,37 @@ const WriteQuestionPage = () => {
 
   const handleDrop = async (event) => {
     event.preventDefault();
-
+    
     const items = event.dataTransfer.items;
-
-    // 드래그한 항목이 이미지인지 확인
+    
     for (const item of items) {
       if (item.type.startsWith("image/")) {
         const blob = await item.getAsFile();
         const formData = new FormData();
         formData.append("file", blob);
         const blobUrl = URL.createObjectURL(blob);
-
-        const textarea = event.target;
-        const cursorPos = textarea.selectionStart; // 커서 위치
-
-        // 기존 텍스트를 분리하여 커서 위치에 이미지 삽입
-        const textBefore = textarea.value.substring(0, cursorPos);
-        const textAfter = textarea.value.substring(cursorPos);
+        
+        const cursorPos = event.target.selectionStart;
+        
+        // 붙여 넣기 이후 Text 설정
+        const textBefore = questionBody.substring(0, cursorPos);
+        const textAfter = questionBody.substring(cursorPos);
         const newText = `${textBefore}![image](${blobUrl})${textAfter}`;
-
-        // 텍스트를 삽입할 때 setRangeText를 사용하여 이미지 URL 삽입
-        textarea.setRangeText(newText.substring(cursorPos, newText.length));
-
-        // 커서 위치 갱신
-        textarea.selectionStart = textarea.selectionEnd =
-          cursorPos + `![image](${blobUrl})`.length;
-
-        // 기본 붙여넣기 방지
-        event.preventDefault();
-
+        
+        // 일단 Blob URL 보여주기
+        setQuestionBody(newText);
+        
+        // 서버에 이미지 업로드 되면 URL 업데이트 하기
         uploadImage(formData).then(({ data }) => {
-          // 서버에서 받은 URL로 blob URL을 교체
           const serverApiPath = import.meta.env.VITE_API_URL;
-          const updatedText = textarea.value.replace(
-            blobUrl,
-            serverApiPath + "/" + data.imagePath.replace(/\\/g, "/")
-          );
-
-          // 교체된 텍스트를 다시 textarea에 설정
-          textarea.value = updatedText;
+          const serverUrl = serverApiPath + "/" + data.imagePath.replace(/\\/g, "/");
+          
+          // 서버로 부터 받아온 URL로 업데이트
+          setQuestionBody(prevBody => prevBody.replace(blobUrl, serverUrl));
         });
+        
+        // 이미지 한개 붙여넣기 이후 끝내기
+        break;
       }
     }
   };
