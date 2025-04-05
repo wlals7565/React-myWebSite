@@ -433,6 +433,15 @@ const QuestionPage = () => {
       });
   };
 
+  // shift+enter 입력시
+  const handlePressShiftAndEnterToCommnet = async (e) => {
+      if (e.shiftKey && e.key === "Enter") {
+        const result = await addComment(id, commentInput);
+      setComments((prev) => [...prev, result.data]);
+      setCommentInput("");
+      }
+  }
+
   return question ? (
     <QuestionBox>
       <ToastContainer position="top-center" autoClose={2000} />
@@ -518,6 +527,7 @@ const QuestionPage = () => {
           placeholder="댓글을 작성해 보세요"
           value={commentInput}
           onChange={handleChangeComment}
+          onKeyDown={handlePressShiftAndEnterToCommnet}
         />
         <CommentButtonBox>
           <CommentSubmitButton onClick={handleClickSubmitComment}>

@@ -447,7 +447,6 @@ const WriteQuestionPage = () => {
         const blob = await item.getAsFile();
         const formData = new FormData();
         formData.append("file", blob);
-        uploadImage(formData).then();
         const blobUrl = URL.createObjectURL(blob);
 
         const textarea = event.target;
@@ -498,7 +497,6 @@ const WriteQuestionPage = () => {
         const blob = await item.getAsFile();
         const formData = new FormData();
         formData.append("file", blob);
-        uploadImage(formData).then();
         const blobUrl = URL.createObjectURL(blob);
 
         const textarea = event.target;
