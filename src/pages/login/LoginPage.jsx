@@ -21,8 +21,6 @@ const Input = styled.input`
   }
 `;
 
-
-
 const LoginBox = styled.div`
   display: flex;
   align-items: center;
@@ -58,11 +56,11 @@ const LoginButton = styled.button`
   cursor: pointer;
 
   &:hover {
-    background-color: #1F53CC;
+    background-color: #1f53cc;
   }
 
   &:active {
-    background-color: #173E99;
+    background-color: #173e99;
   }
 `;
 
@@ -83,33 +81,52 @@ const LoginPage = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
 
   const handleFormChange = useCallback((e) => {
-      setFormData((prev) => {
-        return { ...prev, [e.target.name]: e.target.value };
-      });
-    }, []);
+    setFormData((prev) => {
+      return { ...prev, [e.target.name]: e.target.value };
+    });
+  }, []);
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const [errorMessage, setErrorMessage] = useState("");
+  // 로그인 실패시 에러 메세지
+  const [errorMessage, setErrorMessage] = useState("");
 
-    const goHome = () => {
-      navigate("/");
-    };
+  const goHome = () => {
+    navigate("/");
+  };
 
-    const handleSubmitLogin = (e) => {
-        e.preventDefault()
-        login(setUser, formData, goHome, setErrorMessage);
-      };
+  // 로그인 클릭 시
+  const handleSubmitLogin = (e) => {
+    e.preventDefault();
+    login(setUser, formData, goHome, setErrorMessage);
+  };
+
+  // 로그인 폼 비밀번호에서 엔터 입력시
+  const handlePressEnterInPasswordInput = (e) => {
+    if(e.key !== 'Enter') return;
+    login(setUser, formData, goHome, setErrorMessage);
+  }
 
   return (
     <LoginBox>
       <InputBox>
         <Label>아이디</Label>
-        <Input onChange={handleFormChange} type="email" name="email" value={formData.email}></Input>
+        <Input
+          onChange={handleFormChange}
+          type="email"
+          name="email"
+          value={formData.email}
+        ></Input>
       </InputBox>
       <InputBox>
         <Label>비밀번호</Label>
-        <Input onChange={handleFormChange} type="password" name="password" value={formData.password}></Input>
+        <Input
+          onChange={handleFormChange}
+          type="password"
+          name="password"
+          value={formData.password}
+          onKeyDown={handlePressEnterInPasswordInput}
+        ></Input>
       </InputBox>
       <LoginButton onClick={handleSubmitLogin}>로그인하기</LoginButton>
       <LoginMenuBox>

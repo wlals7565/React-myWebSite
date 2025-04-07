@@ -1,18 +1,23 @@
 import styled from "styled-components";
 import { useNavigate, useParams } from "react-router";
 import { useEffect, useState, useContext } from "react";
-import { getQuestion } from "../../api/post";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import LoadingCircle from "../../components_v2/presentaions/common/LoadingCircle";
 import Comment from "../../components_v2/presentaions/question/Comment";
-import { addComment } from "../../api/post";
+import {
+  addComment,
+  deletePost,
+  voteToPost,
+  getQuestion,
+} from "../../api/post";
 import UserContext from "../../contexts/user/UserContext";
-import { deletePost } from "../../api/post";
 import { deleteComment, updateComment } from "../../api/comment";
-import { voteToPost } from "../../api/post";
 import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
+import { follow, unfollow } from "../../api/follows";
+import LikeIcon from "../../components_v2/presentaions/icons/LikeIcon";
+import ShareIcon from "../../components_v2/presentaions/icons/ShareIcon";
 
 const QuestionBox = styled.div`
   flex: 1;
@@ -155,13 +160,13 @@ const SideBarButton = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  border: ${({$voteState}) => $voteState ? "1px solid #A1F524" : 'none'};
+  border: ${({ $voteState }) => ($voteState ? "1px solid #A1F524" : "none")};
   outline: none;
   width: 3rem;
   height: 3rem;
   background-color: #ffffff;
 
-  color: ${({$voteState}) => $voteState ? "#A1F524" : '#8e8e8e'};
+  color: ${({ $voteState }) => ($voteState ? "#A1F524" : "#8e8e8e")};
   cursor: pointer;
 
   &:hover {
@@ -306,24 +311,33 @@ const FollowButton = styled.button`
   cursor: pointer;
   margin-right: 2rem;
   border: none;
-  background-color: #f0f0f0;
+  background-color: #246beb;
   padding: 0.5rem 1rem;
-  color: #84E184;
+  color: #ffffff;
   font-size: 1.2rem;
   font-weight: bold;
 
   &:hover {
-    background-color: #e4e4e4;
+    background-color: #1d56bc;
   }
 
   &:active {
-    background-color: #d8d8d8;
+    background-color: #16408d;
   }
-`
+`;
 
 const checkVoteState = (votes, username) => {
-  return votes.some((vote) => vote.voter.name === username)
-}
+  return votes.some((vote) => vote.voter.name === username);
+};
+
+// 팔로우 했는지 안했는지 체크하기
+const checkFollowing = (followers, userId) => {
+  console.log("checkFollowing");
+  console.log(followers);
+  console.log(userId);
+  const isFollowing = followers.some(({ follower }) => follower.id === userId);
+  return !isFollowing;
+};
 
 const QuestionPage = () => {
   const { id } = useParams();
@@ -331,7 +345,34 @@ const QuestionPage = () => {
   const [comments, setComments] = useState(undefined);
   const [commentInput, setCommentInput] = useState("");
   const { user } = useContext(UserContext);
+  console.log(user);
   console.log(question);
+
+  // 구독하기 버튼 클릭 시
+  const handleClickFollowButton = async () => {
+    await follow(question.author.id);
+    setQuestion((prev) => ({
+      ...prev,
+      author: {
+        ...prev.author,
+        followers: [...prev.author.followers, { follower: { id: user.id } }],
+      },
+    }));
+  };
+
+  // 구독 취소하기 버튼 클릭 시
+  const handleClickUnfollowButton = async () => {
+    await unfollow(question.author.id);
+    setQuestion((prev) => ({
+      ...prev,
+      author: {
+        ...prev.author,
+        followers: prev.author.followers.filter(
+          ({ follower }) => follower.id !== user.id
+        ),
+      },
+    }));
+  };
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -411,15 +452,19 @@ const QuestionPage = () => {
 
   // 해당 게시글에 투표
   const handleClickVoteButton = async () => {
-    console.log(user)
+    console.log(user);
     try {
-      const {data} = await voteToPost(id, 1);
-      if(!data) return setQuestion((prev) => ({...prev, votes: prev.votes.filter((vote)=> vote.voter.name !== user.username)})) 
-      setQuestion((prev) => ({...prev, votes: [...prev.votes,data]}))
+      const { data } = await voteToPost(id, 1);
+      if (!data)
+        return setQuestion((prev) => ({
+          ...prev,
+          votes: prev.votes.filter((vote) => vote.voter.name !== user.username),
+        }));
+      setQuestion((prev) => ({ ...prev, votes: [...prev.votes, data] }));
     } catch (error) {
-      alert("게시글 좋아요에 실패하였습니다.")
+      alert("게시글 좋아요에 실패하였습니다.");
     }
-  }
+  };
 
   const handleClickCopyUrl = () => {
     const currentUrl = window.location.href;
@@ -435,12 +480,12 @@ const QuestionPage = () => {
 
   // shift+enter 입력시
   const handlePressShiftAndEnterToCommnet = async (e) => {
-      if (e.shiftKey && e.key === "Enter") {
-        const result = await addComment(id, commentInput);
+    if (e.shiftKey && e.key === "Enter") {
+      const result = await addComment(id, commentInput);
       setComments((prev) => [...prev, result.data]);
       setCommentInput("");
-      }
-  }
+    }
+  };
 
   return question ? (
     <QuestionBox>
@@ -459,7 +504,18 @@ const QuestionPage = () => {
               <TextButton onClick={handleClickDeleteButton}>삭제</TextButton>
             </ButtonBox>
           ) : (
-            <FollowButton>Follow</FollowButton>
+            <>
+              {" "}
+              {checkFollowing(question.author.followers, user.id) ? (
+                <FollowButton onClick={handleClickFollowButton}>
+                  구독하기
+                </FollowButton>
+              ) : (
+                <FollowButton onClick={handleClickUnfollowButton}>
+                  구독 취소하기
+                </FollowButton>
+              )}
+            </>
           )}
         </QuestionMetaDataBox>
         <TagBox>
@@ -470,35 +526,15 @@ const QuestionPage = () => {
         </TagBox>
       </QuestionHeaderBox>
       <StickBox>
-        <SideBarButton $voteState={checkVoteState(question.votes, user.username)} onClick={handleClickVoteButton}>
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fill="currentColor"
-              d="M18 1l-6 4-6-4-6 5v7l12 10 12-10v-7z"
-            />
-          </svg>
+        <SideBarButton
+          $voteState={checkVoteState(question.votes, user.username)}
+          onClick={handleClickVoteButton}
+        >
+          <LikeIcon />
         </SideBarButton>
         <VoteBox>{question.votes.length}</VoteBox>
         <SideBarButton onClick={handleClickCopyUrl}>
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-            role="img"
-          >
-            <path
-              fill="currentColor"
-              d="M5 7c2.761 0 5 2.239 5 5s-2.239 5-5 5-5-2.239-5-5 2.239-5 5-5zm11.122 12.065c-.073.301-.122.611-.122.935 0 2.209 1.791 4 4 4s4-1.791 4-4-1.791-4-4-4c-1.165 0-2.204.506-2.935 1.301l-5.488-2.927c-.23.636-.549 1.229-.943 1.764l5.488 2.927zm7.878-15.065c0-2.209-1.791-4-4-4s-4 1.791-4 4c0 .324.049.634.122.935l-5.488 2.927c.395.535.713 1.127.943 1.764l5.488-2.927c.731.795 1.77 1.301 2.935 1.301 2.209 0 4-1.791 4-4z"
-            />
-          </svg>
+          <ShareIcon />
         </SideBarButton>
       </StickBox>
       <Markdown

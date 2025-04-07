@@ -159,7 +159,9 @@ const Comment = ({ comment, onDeleteComment, onUpdateComment }) => {
           </EditButtonBox>
         </>
       ) : (
+        <>
         <CommentBody>{comment.body}</CommentBody>
+        </>
       )}
     </CommentBox>
   );
