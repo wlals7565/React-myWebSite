@@ -588,8 +588,8 @@ const WriteQuestionPage = () => {
                 style={{
                   display: "block",
                   margin: "0.5rem auto",
-                  maxWidth: "80%",
-                  maxHeight: "auto",
+                  maxWidth: "60%",
+                  height: "auto",
                 }}
               />
             ),

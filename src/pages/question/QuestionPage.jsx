@@ -378,7 +378,8 @@ const QuestionPage = () => {
   useEffect(() => {
     getQuestion(id)
       .then((result) => {
-        const { comments, ...questionData } = result.data; // 구조 분해 할당 사용
+        // 댓글 질문 평탄화
+        const { comments, ...questionData } = result.data;
         setQuestion(questionData);
         setComments(comments);
       })
@@ -579,6 +580,7 @@ const QuestionPage = () => {
                 comment={comment}
                 onDeleteComment={handleDeleteComment}
                 onUpdateComment={handleUpdateComment}
+                replyCount = {comment.replyCount}
               />
             ))}
         </CommentListBox>

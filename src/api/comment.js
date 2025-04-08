@@ -15,3 +15,11 @@ export const updateComment = async (commentId, body) => {
 export const deleteComment = async (commentId) => {
   return await client.delete(`comments/${commentId}`)
 }
+
+export const replyToCommnet = async (commentId, body, recipientId) => {
+  return await client.post(`/comments/${commentId}/reply`, {body, recipientId})
+}
+
+export const getAllReply = async (commentId) => {
+  return await client.get(`/comments/${commentId}/replies`)
+}

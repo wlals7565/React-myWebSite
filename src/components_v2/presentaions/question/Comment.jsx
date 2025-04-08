@@ -4,6 +4,7 @@ import { useContext } from "react";
 import UserContext from "../../../contexts/user/UserContext";
 import { useState } from "react";
 import PropTypes from "prop-types";
+import ReplyList from "./ReplyList";
 
 const CommentBox = styled.div`
   border-bottom: 1px solid #ccc8c8;
@@ -95,7 +96,7 @@ const CommentEditArea = styled.textarea`
 
 const ProfileImageURL = import.meta.env.VITE_API_URL + "/static/images";
 
-const Comment = ({ comment, onDeleteComment, onUpdateComment }) => {
+const Comment = ({ comment, onDeleteComment, onUpdateComment, replyCount }) => {
   const { user } = useContext(UserContext);
 
   const [isEditing, setIsEditing] = useState(false);
@@ -133,7 +134,7 @@ const Comment = ({ comment, onDeleteComment, onUpdateComment }) => {
         <UserProfileImageBox>
           <UserProfileImage
             src={`${ProfileImageURL}/${comment.author.name}/${comment.author.image}.png`}
-            alt="Gravatar Image"
+            alt="User Profile Image"
           />
         </UserProfileImageBox>
         <CommentPublishInfo>
@@ -161,6 +162,7 @@ const Comment = ({ comment, onDeleteComment, onUpdateComment }) => {
       ) : (
         <>
         <CommentBody>{comment.body}</CommentBody>
+        <ReplyList commenterId={comment.author.id} commentId={comment.id} replyCount={replyCount}/>
         </>
       )}
     </CommentBox>
@@ -180,10 +182,10 @@ Comment.propTypes = {
       image: PropTypes.string.isRequired,
       email: PropTypes.string.isRequired,
     }).isRequired,
-    recommendations: PropTypes.arrayOf(PropTypes.object).isRequired,
   }).isRequired,
   onDeleteComment: PropTypes.func.isRequired,
   onUpdateComment: PropTypes.func.isRequired,
+  replyCount: PropTypes.number.isRequired,
 };
 
 export default Comment;
