@@ -95,17 +95,33 @@ const ReplyList = ({ commentId, replyCount, commenterId }) => {
     });
   };
 
-  const handleClickReply = async () => {
+  // 답글 추가 
+  const handleClickAddReply = async (commenter = undefined, body = undefined) => {
     try {
-      if (!replyBody.trim()) {
+      if (body? !body.trim() : !replyBody.trim()) {
         alert("내용을 입력해주세요.");
       }
-      await replyToCommnet(commentId, replyBody, commenterId);
+      const {data} = await replyToCommnet(commentId, body ? body : replyBody, commenter ? commenter.id : commenterId);
+      console.log(data.result)
+      setReplies((prev) => [...prev, data.result ])
       setReplyBody("");
     } catch (error) {
       console.error(error);
     }
   };
+
+  // 답글 추가 이벤트 받는 함수
+  const ClickAddReply = async () => {
+    await handleClickAddReply()
+  }
+
+  const handleEditReply = (replyId, body) => {
+    setReplies((prev) => prev.map((reply) => reply.id !== replyId ? reply : {...reply, body: body}))
+  }
+
+  const handleDeleteReply = (replyId) => {
+    setReplies((prev) => prev.filter((reply) => reply.id !== replyId ))
+  }
 
   return (
     <>
@@ -123,7 +139,7 @@ const ReplyList = ({ commentId, replyCount, commenterId }) => {
           <>
             {replies &&
               replies.length > 0 &&
-              replies.map((reply) => <Reply key={reply.id} reply={reply} />)}
+              replies.map((reply) => <Reply key={reply.id} reply={reply} handleEditReply={handleEditReply} handleDeleteReply={handleDeleteReply} handleClickAddReply={handleClickAddReply} />)}
           </>
           <ReplyTextarea
             placeholder="답글을 작성하세요."
@@ -131,7 +147,7 @@ const ReplyList = ({ commentId, replyCount, commenterId }) => {
             value={replyBody}
           ></ReplyTextarea>
           <ButtonBox>
-            <BlueButton onClick={handleClickReply}> 답글 달기</BlueButton>
+            <BlueButton onClick={ClickAddReply}> 답글 달기</BlueButton>
           </ButtonBox>
         </ReplyListBox>
       ) : undefined}

@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { formatDate } from "../../../utilities/data";
 import { useContext, useState } from "react";
 import { replyToCommnet } from "../../../api/comment";
+import { deleteReply, patchReply } from "../../../api/reply";
 import PropTypes from "prop-types";
 import UserContext from "../../../contexts/user/UserContext";
 
@@ -95,6 +96,11 @@ const Button = styled.button`
   }
 `;
 
+const To = styled.span`
+  margin-right: 1rem;
+  color: #555555;
+`
+
 const ReplyTextarea = styled.textarea`
   min-height: 6rem;
   width: 100%;
@@ -160,7 +166,9 @@ const BlueButton = styled.button`
 
 const ProfileImageURL = import.meta.env.VITE_API_URL + "/static/images";
 
-const Reply = ({ reply }) => {
+const Reply = ({ reply, handleEditReply, handleDeleteReply, handleClickAddReply }) => {
+  const { user } = useContext(UserContext);
+
   // 답글 토글 상태
   const [toggle, setToggle] = useState(false);
 
@@ -169,6 +177,9 @@ const Reply = ({ reply }) => {
 
   // 답글 수정 본문
   const [editedBody, setEditedBody] = useState("");
+
+  // 답글에 대한 답글 본문
+  const [replyBody, setReplyBody] = useState("")
 
   // 답글 수정 버튼 클릭시
   const handleEditClick = () => {
@@ -182,29 +193,49 @@ const Reply = ({ reply }) => {
   };
 
   // 답글 저장 버튼 클릭시
-  const handleSaveEdit = () => {
+  const handleSaveEdit = async () => {
     if (editedBody.trim() === "") return;
+    try {
+      await patchReply(reply.id, editedBody);
+      alert("답글이 성공적으로 수정되었습니다.");
+      handleEditReply(reply.id, editedBody);
+    } catch (error) {
+      alert(
+        "서버 오류로 인해 답글을 수정하지 못했습니다. 나중에 다시 시도해주세요."
+      );
+      console.error(error);
+    }
     setIsEditing(false);
   };
 
   // 답글 삭제
-  const handleDeleteClick = () => {
+  const handleDeleteClick = async () => {
     if (confirm("정말 이 댓글을 삭제하시겠습니까?")) {
-      return;
+      try {
+        await deleteReply(reply.id)
+        alert("답글이 성공적으로 삭제되었습니다.")
+        handleDeleteReply(reply.id)
+      } catch (error) {
+        alert(
+          "서버 오류로 인해 답글을 수정하지 못했습니다. 나중에 다시 시도해주세요."
+        );
+        console.error(error);
+      }
     }
   };
-
-  const { user } = useContext(UserContext);
 
   // 토글 클릭 시
   const handleClickToggle = () => {
     setToggle((prev) => !prev);
   };
 
-  const handleClickReplyToComment = async () => {
-    // ㄱㄷ
+  // reply에 대한 reply로 기억하는데
+  const handleClickReplyToReply = async  () => {
+    await handleClickAddReply(reply.author, replyBody)
+    alert("성공적으로 답글이 달렸습니다.")
+    setReplyBody("")
+    setToggle((prev) => !prev)
 
-    console.log();
   };
   return (
     <ReplyBox>
@@ -238,7 +269,7 @@ const Reply = ({ reply }) => {
           </EditButtonBox>
         </>
       ) : undefined}
-      <ReplyBody>{reply.body}</ReplyBody>
+      <ReplyBody><To>{`@${reply.to.name}님에게`}</To>{reply.body}</ReplyBody>
       {toggle ? (
         <ToggleButton onClick={handleClickToggle}>숨기기 ▲</ToggleButton>
       ) : (
@@ -247,10 +278,10 @@ const Reply = ({ reply }) => {
       {toggle ? (
         <>
           <ReplyTextarea
-            placeholder={`${"나"}에게 댓글 작성하기`}
+            placeholder={`${reply.author.name}에게 댓글 작성하기`} value={replyBody} onChange={(e) => setReplyBody(e.target.value)}
           ></ReplyTextarea>
           <ButtonBox>
-            <BlueButton onClick={handleClickReplyToComment}>
+            <BlueButton onClick={handleClickReplyToReply}>
               {" "}
               답글 달기
             </BlueButton>
@@ -269,10 +300,20 @@ Reply.propTypes = {
       image: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
     }).isRequired,
+    to: PropTypes.shape({
+      email: PropTypes.string.isRequired,
+      id: PropTypes.string.isRequired,
+      image: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+    }).isRequired,
+    id: PropTypes.string.isRequired,
     body: PropTypes.string.isRequired,
     createdAt: PropTypes.string.isRequired,
     updatedAt: PropTypes.string.isRequired,
   }).isRequired,
+  handleEditReply: PropTypes.func.isRequired,
+  handleDeleteReply: PropTypes.func.isRequired,
+  handleClickAddReply: PropTypes.func.isRequired,
 };
 
 export default Reply;
