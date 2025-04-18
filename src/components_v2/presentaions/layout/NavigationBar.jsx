@@ -34,8 +34,9 @@ const Menu = styled.div`
 
 const navigations = [
   { path: "/questionList", title: "질문 게시판" },
-  { path: "/calendar", title: "일정 관리" },
   { path: "/chat", title: "실시간 채팅" },
+  { path: "/calendar", title: "일정 관리" },
+  { path: "emailBuilder", title: "이메일 빌더"},
   { path: "/play", title: "심심풀이용" },
 ];
 
