@@ -29,11 +29,11 @@ export const voteToPost = async (postId, vote) => {
     { withCredentials: true }
   );
 };
-
+//
 export const addComment = async (postId, body) => {
   return await client.post(
     `/posts/${postId}/comments`,
-    { body },
+    body,
     { withCredentials: true }
   );
 };

@@ -16,10 +16,8 @@ export const deleteComment = async (commentId) => {
   return await client.delete(`comments/${commentId}`)
 }
 
+// 
 export const replyToCommnet = async (commentId, body, recipientId) => {
-  console.log(commentId)
-  console.log(body)
-  console.log(recipientId)
   return await client.post(`/comments/${commentId}/reply`, {body, to: recipientId})
 }
 

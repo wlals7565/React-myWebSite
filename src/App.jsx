@@ -19,6 +19,7 @@ import PlayPage from "./pages/play/PlayPage";
 import QuestionPage from "./pages/question/QuestionPage";
 import ProfilePages from "./pages/profile/ProfilePages";
 import AboutPage from "./pages/about/AboutPage";
+import { ToastContainer } from "react-toastify";
 
 // 테마 설정
 const theme = {
@@ -76,6 +77,7 @@ function App() {
   }, [setUser]);
   return (
     <div>
+            <ToastContainer position="top-center" autoClose={2000} />
       <ThemeProvider theme={theme}>
         <GlobalStyle />
         <UserContext.Provider value={{ user, setUser }}>

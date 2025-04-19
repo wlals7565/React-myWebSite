@@ -13,11 +13,12 @@ import {
 } from "../../api/post";
 import UserContext from "../../contexts/user/UserContext";
 import { deleteComment, updateComment } from "../../api/comment";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { follow, unfollow } from "../../api/follows";
 import LikeIcon from "../../components_v2/presentaions/icons/LikeIcon";
 import ShareIcon from "../../components_v2/presentaions/icons/ShareIcon";
+import QuestionBody from "../../components_v2/presentaions/question/QuestionBody";
 
 const QuestionBox = styled.div`
   flex: 1;
@@ -274,10 +275,6 @@ const formatDate = (dateString) => {
   return `${year}년 ${month}월 ${day}일`;
 };
 
-const urlTransform = (url, key, node) => {
-  return url; // URL을 그대로 반환
-};
-
 const VoteBox = styled.div`
   font-size: 1.2rem;
 `;
@@ -330,14 +327,16 @@ const checkVoteState = (votes, username) => {
   return votes.some((vote) => vote.voter.name === username);
 };
 
-// 팔로우 했는지 안했는지 체크하기
-const checkFollowing = (followers, userId) => {
-  console.log("checkFollowing");
-  console.log(followers);
-  console.log(userId);
-  const isFollowing = followers.some(({ follower }) => follower.id === userId);
-  return !isFollowing;
-};
+  // 팔로우 했는지 안했는지 체크하기
+  const checkFollowing = (followers, userId) => {
+    console.log("checkFollowing");
+    console.log(followers);
+    console.log(userId);
+    const isFollowing = followers.some(
+      ({ follower }) => follower.id === userId
+    );
+    return !isFollowing;
+  };
 
 const QuestionPage = () => {
   const { id } = useParams();
@@ -393,7 +392,10 @@ const QuestionPage = () => {
   const handleClickSubmitComment = async () => {
     //
     try {
-      const result = await addComment(id, commentInput);
+      const result = await addComment(id, {
+        body: commentInput,
+        to: question.author.id,
+      });
       setComments((prev) => [...prev, result.data]);
       setCommentInput("");
     } catch (error) {
@@ -482,7 +484,10 @@ const QuestionPage = () => {
   // shift+enter 입력시
   const handlePressShiftAndEnterToCommnet = async (e) => {
     if (e.shiftKey && e.key === "Enter") {
-      const result = await addComment(id, commentInput);
+      const result = await addComment(id, {
+        body: commentInput,
+        to: question.author.id,
+      });
       setComments((prev) => [...prev, result.data]);
       setCommentInput("");
     }
@@ -490,7 +495,6 @@ const QuestionPage = () => {
 
   return question ? (
     <QuestionBox>
-      <ToastContainer position="top-center" autoClose={2000} />
       <QuestionHeaderBox>
         <QuestionTitleBox>{question.title}</QuestionTitleBox>
         <QuestionMetaDataBox>
@@ -538,25 +542,7 @@ const QuestionPage = () => {
           <ShareIcon />
         </SideBarButton>
       </StickBox>
-      <Markdown
-        remarkPlugins={[remarkGfm]}
-        components={{
-          img: ({ node, ...props }) => (
-            <img
-              {...props}
-              style={{
-                display: "block",
-                margin: "0.5rem auto",
-                maxWidth: "80%",
-                maxHeight: "auto",
-              }}
-            />
-          ),
-        }}
-        urlTransform={urlTransform}
-      >
-        {question.body}
-      </Markdown>
+      <QuestionBody body={question.body}/>
       {/* 여기에 velog처럼 사진 유저이름 팔로우 */}
       <CommentBox>
         <CommentTitle>{comments.length}개의 댓글</CommentTitle>
@@ -580,7 +566,7 @@ const QuestionPage = () => {
                 comment={comment}
                 onDeleteComment={handleDeleteComment}
                 onUpdateComment={handleUpdateComment}
-                replyCount = {comment.replyCount}
+                replyCount={comment.replyCount}
               />
             ))}
         </CommentListBox>
