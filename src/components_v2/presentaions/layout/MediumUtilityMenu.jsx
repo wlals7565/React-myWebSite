@@ -4,8 +4,9 @@ import UserContext from "../../../contexts/user/UserContext";
 import { logout } from "../../../api/auth";
 import { useCallback, useContext } from "react";
 import { ProfileImageURL } from "../../../utilities/common/CONST";
-import AlarmModal from "../alarm/alarmModal";
-import { useState } from "react";
+import AlarmModal from "../alarm/AlarmModal";
+import { useState, useEffect } from "react";
+import { getAllAlarms } from "../../../api/notification";
 
 const LogoAndUtilityMenuBox = styled.div`
   margin: 1rem;
@@ -54,13 +55,32 @@ const MenuBox = styled.div`
   font-size: 1.5rem;
   white-space: nowrap;
   cursor: pointer;
+  justify-content: center;
+  align-items: center;
 `;
+
+const AlarmCountBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.25rem;
+`
 
 const MediumUtilityMenu = () => {
   const { user, setUser } = useContext(UserContext);
   const navigate = useNavigate();
+  const [alarms, setAlarms] = useState([]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // 로그인이 되어 있을 경우 알람 가져오기
+  useEffect(() => {
+    if (!user.id) return;
+    getAllAlarms().then(({ data }) => {
+      console.log(data);
+      setAlarms(data);
+    });
+  }, [user]);
 
   const handleClickLogoBox = () => {
     navigate("/");
@@ -103,7 +123,7 @@ const MediumUtilityMenu = () => {
 
   return (
     <LogoAndUtilityMenuBox>
-      {isModalOpen && <AlarmModal onCloseModal={onCloseModal} />}
+      {isModalOpen && <AlarmModal alarms={alarms} setAlarms={setAlarms} onCloseModal={onCloseModal} />}
       <LogoBox onClick={handleClickLogoBox}>
         <Logo src="../../../svg/logo.svg" /> 이정훈의 웹사이트
       </LogoBox>
@@ -111,9 +131,9 @@ const MediumUtilityMenu = () => {
         {user.email ? (
           <>
             <MenuBox onClick={handleClickAlarmButton}>
-              {0}
-              <Icon src="../../../svg/bell.svg" />
-              소식
+            <Icon src="../../../svg/bell.svg" />
+              {alarms && alarms.length>99 ? <AlarmCountBox>{'99+'}</AlarmCountBox> : <AlarmCountBox>{alarms.length}</AlarmCountBox>}
+              개의 소식
             </MenuBox>
             <MenuBox onClick={handleClickMyProfile}>
               <UserProfileIcon
