@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import crossIcon from '../../../../svg/cross.svg'
-
+import crossIcon from "../../../../svg/cross.svg";
+import { useState } from "react";
 const AlarmModalBox = styled.div`
   position: fixed;
   top: 0;
@@ -26,6 +26,7 @@ const AlarmPanel = styled.div`
   padding: 1rem;
   display: flex;
   flex-direction: column;
+  position: relative;
 `;
 
 const AlarmTitle = styled.div`
@@ -53,7 +54,7 @@ const AlarmList = styled.div`
   align-items: center;
   justify-content: center;
   overflow-y: auto;
-`
+`;
 
 const AlarmItemBox = styled.div`
   margin-bottom: 2rem;
@@ -65,88 +66,175 @@ const AlarmItemBox = styled.div`
   width: 80%;
   display: flex;
   flex-direction: column;
-`
+`;
 
 const AlarmItemTitle = styled.div`
-  margin-bottom: 0.5rem;
-  white-space: nowrap;       
-  overflow: hidden;          
-  text-overflow: ellipsis; 
-`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
 
 const AlarmItemContent = styled.div`
   color: #555555;
-  white-space: nowrap;       
-  overflow: hidden;          
-  text-overflow: ellipsis; 
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   margin-bottom: 0.25rem;
-`
+`;
 
 const AlarmItemCreatedAt = styled.div`
   color: #555555;
-  white-space: nowrap;       
-  overflow: hidden;          
-  text-overflow: ellipsis; 
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-size: 0.75rem;
+`;
+const AlarmItemHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+`;
+
+const HambergerMenu = styled.button`
+  cursor: pointer;
+  background: none;
+  border: none;
+  margin-left: 1rem;
+  font-size: 1.2rem;
+  color: #bfbfbf;
+
+  &:active {
+    color: #000000;
+  }
+`;
+
+const MenuModal = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 16px;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  align-items: center;
+
+`;
+
+const ExitMenuButton = styled.button`
+  width: 80%;
+  display: block;
+  margin: 2rem 0;
+  border-radius: 12px;
+  padding: 1rem;
+  background-color: white;
+  border:none;
+  cursor: pointer;
 `
 
+const MenuButtonBox = styled.div`
+  width: 80%;
+  display: block;
+  background-color: white;
+  border:none;
+  border-radius: 12px;
+`
+
+const MenuDeleteButton = styled.button`
+  width: 100%;
+  display: block;
+  border: none;
+  background: none;
+  padding: 1rem;
+  cursor: pointer;
+`
+
+const MenuLinkButton = styled.button`
+  width: 100%;
+  display: block;
+  border: none;
+  background: none;
+  border-bottom: 1px solid black;
+  padding: 1rem;
+  cursor: pointer;
+`
 // 타이틀: 댓글이 달렸습니다.
 // 내용: 나 누구인데 이거 맞다.
 // 시간: 2025-00-00
-// 
+//
 const sample = [
   {
-    title: "댓글이 달렸습니다.1dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-    content: "나 누구인데 이거 맞다.1dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    id: "1",
+    title:
+      "댓글이 달렸습니다.1dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    content:
+      "나 누구인데 이거 맞다.1dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
     createdAt: "2025-00-00",
   },
   {
+    id: "2",
     title: "댓글이 달렸습니다.2",
     content: "나 누구인데 이거 맞다.2",
     createdAt: "2025-00-00",
   },
   {
+    id: "3",
     title: "댓글이 달렸습니다.3",
     content: "나 누구인데 이거 맞다.3",
     createdAt: "2025-00-00",
   },
   {
+    id: "4",
     title: "댓글이 달렸습니다.4",
     content: "나 누구인데 이거 맞다.4",
     createdAt: "2025-00-00",
   },
-]
-
+];
 
 const AlarmModal = ({ onCloseModal }) => {
-  
-  // 아이템 눌렀을 때 해당 URL로 이동하는 기능도 구현하여야 한다.
-  // 모든 아이템에 대해서는 아닌거 같은데 어떻게 구분시키지?
-  // 모든 아이템에 대해 URL 이동을 제공하는걸로 하나?
-  // 알람 삭제 기능도 있어야 하네
-  // 알람 전체 삭제도
-  // 알람 모두 읽음도?
-  
+  const [alarms, setAlarms] = useState(sample);
+  // 상단 바 만들기 전체 삭제 버튼 구현하기 위한
+  const [isMenuModalOpen, setIsMenuModalOpen] = useState(false);
 
   return (
     <AlarmModalBox onClick={onCloseModal}>
       <AlarmPanel onClick={(e) => e.stopPropagation()}>
+        {isMenuModalOpen && (
+          <MenuModal onClick={() => setIsMenuModalOpen((prev) => !prev)}>
+            <MenuButtonBox>
+            <MenuLinkButton>이동하기</MenuLinkButton>
+              <MenuDeleteButton>삭제하기</MenuDeleteButton>
+            </MenuButtonBox>
+            <ExitMenuButton>
+              취소
+            </ExitMenuButton>
+          </MenuModal>
+        )}
         <AlarmHeader>
           <AlarmTitle>내 소식</AlarmTitle>
-          <AlarmExitButton onClick={onCloseModal}><img src={crossIcon}/></AlarmExitButton>
+          <AlarmExitButton onClick={onCloseModal}>
+            <img src={crossIcon} />
+          </AlarmExitButton>
         </AlarmHeader>
         <AlarmList>
-          {sample.map((data,i) => <AlarmItemBox key={i}>
-            <AlarmItemTitle>
-              {data.title}
-            </AlarmItemTitle>
-            <AlarmItemContent>
-              {data.content}
-            </AlarmItemContent>
-            <AlarmItemCreatedAt>
-              {data.createdAt}
-            </AlarmItemCreatedAt>
-          </AlarmItemBox>)}
+          {sample.map((data) => (
+            <AlarmItemBox key={data.id}>
+              <AlarmItemHeader>
+                <AlarmItemTitle>{data.title}</AlarmItemTitle>
+                <HambergerMenu
+                  onClick={() => setIsMenuModalOpen((prev) => !prev)}
+                >
+                  ⁝
+                </HambergerMenu>
+              </AlarmItemHeader>
+              <AlarmItemContent>{data.content}</AlarmItemContent>
+              <AlarmItemCreatedAt>{data.createdAt}</AlarmItemCreatedAt>
+            </AlarmItemBox>
+          ))}
         </AlarmList>
       </AlarmPanel>
     </AlarmModalBox>

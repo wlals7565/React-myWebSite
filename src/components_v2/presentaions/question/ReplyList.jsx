@@ -1,8 +1,9 @@
 import { useState } from "react";
 import styled from "styled-components";
 import Reply from "./Reply";
-import { getAllReply, replyToCommnet } from "../../../api/comment";
+import { getAllReply, replyToComment } from "../../../api/comment";
 import PropTypes from "prop-types";
+import { useParams, useSearchParams } from "react-router";
 
 // 대충
 // [ 댓글들 ]
@@ -81,6 +82,7 @@ const ReplyList = ({ commentId, replyCount, commenterId }) => {
   const [replies, setReplies] = useState(undefined);
   const [isOpen, setIsOpen] = useState(false);
   const [replyBody, setReplyBody] = useState("");
+  const {id} = useParams()
 
   const handleChangeReplyBody = (e) => {
     setReplyBody(e.target.value);
@@ -101,7 +103,7 @@ const ReplyList = ({ commentId, replyCount, commenterId }) => {
       if (body? !body.trim() : !replyBody.trim()) {
         alert("내용을 입력해주세요.");
       }
-      const {data} = await replyToCommnet(commentId, body ? body : replyBody, commenter ? commenter.id : commenterId);
+      const {data} = await replyToComment(commentId, body ? body : replyBody, commenter ? commenter.id : commenterId, id );
       console.log(data.result)
       setReplies((prev) => [...prev, data.result ])
       setReplyBody("");

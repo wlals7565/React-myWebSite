@@ -1,6 +1,6 @@
 import reset from "styled-reset";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
-import {  Route, Routes } from "react-router";
+import { Route, Routes } from "react-router";
 import Layout from "./components_v2/presentaions/layout/Layout";
 import { useState, useEffect } from "react";
 import UserContext from "./contexts/user/UserContext";
@@ -77,31 +77,28 @@ function App() {
   }, [setUser]);
   return (
     <div>
-            <ToastContainer position="top-center" autoClose={2000} />
+      <ToastContainer position="top-center" autoClose={2000} />
       <ThemeProvider theme={theme}>
         <GlobalStyle />
         <UserContext.Provider value={{ user, setUser }}>
           <LayoutContext.Provider value={{ layout, setLayout }}>
-              <Routes>
-                <Route path="/WriteQuestion" element={<WriteQuestionPage />} />
-                <Route element={<Layout layout={layout} />}>
-                  <Route path="/" element={<HomePage />} />
-                  <Route path="/QuestionList" element={<QuestionListPage />} />
-                  <Route path="/Questions/:id" element={<QuestionPage />} />
-                  <Route path="/login" element={<LoginPage />} />
-                  <Route path="/register" element={<RegisterPage />} />
-                  <Route
-                    path="/Profiles/:username"
-                    element={<ProfilePages />}
-                  />
-                  <Route path="/Chat" element={<ChatPage />} />
-                  <Route path="/Calendar" element={<CalendarPage />} />
-                  <Route path="/play" element={<PlayPage />} />
-                  <Route path="/test" element={<TestPage />} />
-                  <Route path="/about" element={<AboutPage />} />
-                  <Route path="*" element={<NotFoundPage />} />
-                </Route>
-              </Routes>
+            <Routes>
+              <Route path="/WriteQuestion" element={<WriteQuestionPage />} />
+              <Route element={<Layout layout={layout} />}>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/QuestionList" element={<QuestionListPage />} />
+                <Route path="/Questions/:id" element={<QuestionPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/Profiles/:username" element={<ProfilePages />} />
+                <Route path="/Chat" element={<ChatPage />} />
+                <Route path="/Calendar" element={<CalendarPage />} />
+                <Route path="/play" element={<PlayPage />} />
+                <Route path="/test" element={<TestPage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="*" element={<NotFoundPage />} />
+              </Route>
+            </Routes>
           </LayoutContext.Provider>
         </UserContext.Provider>
       </ThemeProvider>

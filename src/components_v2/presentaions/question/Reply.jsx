@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { formatDate } from "../../../utilities/data";
 import { useContext, useState } from "react";
-import { replyToCommnet } from "../../../api/comment";
 import { deleteReply, patchReply } from "../../../api/reply";
 import PropTypes from "prop-types";
 import UserContext from "../../../contexts/user/UserContext";
