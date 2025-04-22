@@ -198,6 +198,7 @@ const sample = [
 const AlarmModal = ({ onCloseModal }) => {
   const [alarms, setAlarms] = useState(sample);
   // 상단 바 만들기 전체 삭제 버튼 구현하기 위한
+  
   const [isMenuModalOpen, setIsMenuModalOpen] = useState(false);
 
   return (
