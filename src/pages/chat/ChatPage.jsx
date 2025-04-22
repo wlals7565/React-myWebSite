@@ -161,7 +161,6 @@ const ChatPage = () => {
         navigate(-1);
       }
     };
-
     checkLogin();
 
     if(!user.username) {

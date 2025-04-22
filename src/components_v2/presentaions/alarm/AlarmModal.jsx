@@ -3,6 +3,8 @@ import styled from "styled-components";
 import crossIcon from "../../../../svg/cross.svg";
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import { deleteAlarm, deleteAllAlarms } from "../../../api/notification";
+
 const AlarmModalBox = styled.div`
   position: fixed;
   top: 0;
@@ -182,17 +184,16 @@ const HeaderMenuBox = styled.div`
 const AlarmModal = ({ onCloseModal, alarms, setAlarms }) => {
 
   const navigate = useNavigate();
-
-  // 상단 바 만들기 전체 삭제 버튼 구현하기 위한
   
+  // 메뉴 모달 열렸는지 여부
   const [isMenuModalOpen, setIsMenuModalOpen] = useState(false);
 
   // 메뉴 모달 열 때 특정 알람을 선택했다는 것을 알려야 함.
-  const [selectedAlarm, setSelectedAlarm] = useState(undefined);
+  const [selectedAlarmId, setSelectedAlarmId] = useState(undefined);
 
   // 전체 삭제 버튼을 클릭 시
   const handleClickDeleteAllAlarmButton = () => {
-    // 서버로 알람 전체 삭제 요청하는 로직 들어가야 함.
+    deleteAllAlarms();
     if(confirm("전체 알람을 삭제하시겠습까?")) {
       setAlarms([]);
     }
@@ -200,18 +201,18 @@ const AlarmModal = ({ onCloseModal, alarms, setAlarms }) => {
 
   // 삭제 버튼을 클릭 시
   const handleClickDeleteButton = () => {
-    // 서버로 특정 알람 삭제 요청하는 로직 들어가야 함.
-    setAlarms((prev) => prev.filter((alarm) => alarm.id !== selectedAlarm));
+    deleteAlarm(selectedAlarmId)
+    setAlarms((prev) => prev.filter((alarm) => alarm.id !== selectedAlarmId));
   };
 
   // 특정 알람의 햄버거 메뉴 클릭 시
   const handleClickHambergerMenuInAlarm = (e) => {
-    setSelectedAlarm(e.currentTarget.dataset.id);
+    setSelectedAlarmId(e.currentTarget.dataset.id);
     setIsMenuModalOpen((prev) => !prev);
   };
 
   const handleClickLinkButton = () => {
-    const selectedAlarmUrl = alarms.find((alarm) => alarm.id === selectedAlarm).url
+    const selectedAlarmUrl = alarms.find((alarm) => alarm.id === selectedAlarmId).url
     navigate(selectedAlarmUrl)
     onCloseModal()
   }
