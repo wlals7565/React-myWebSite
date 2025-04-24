@@ -101,7 +101,7 @@
 
 </details>
 
-# 프로젝트 페이지 화면
+# 프로젝트 페이지 화면_v1
 <table border="3">
   <tbody>
   <tr align="center">
@@ -127,6 +127,57 @@
     <td><img src='./pictures/로그인.png'></td>
     <td><img src='./pictures/프로필 페이지.png'></td>
   </tr>
+</table>
+
+# 프로젝트 페이지 화면_v2
+UI/UX 부분에서 너무 대충 만들어졌다는 이미지가 있어 깔끔한 형태로 바꾸어 보았습니다.
+
+<table border="3">
+  <tbody>
+  <tr align="center">
+    <td colspan=3><b>이미지를 클릭하면 크게 볼 수 있습니다!</b></td>
+  </tr>
+  <tr align="center">
+    <td width="300">홈페이지</td>
+    <td width="300">질문 목록 페이지</td>
+    <td width="300">질문 작성 페이지</td>
+  </tr>
+  <tr>
+    <td><img src='./pictures/홈페이지_v2.png'></td>
+    <td><img src='./pictures/질문목록 페이지_v2.png'></td>
+    <td><img src='./pictures/질문 작성 페이지_v2.png'></td>
+  </tr>
+  <tr align="center">
+    <td>질문 페이지</td>
+    <td>댓글 및 대댓글</td>
+    <td>내소식</td>
+  </tr>
+  <tr>
+    <td><img src='./pictures/질문 페이지_v2.png'></td>
+    <td><img src='./pictures/댓글 및 대댓글_v2.png'></td>
+    <td><img src='./pictures/내소식_v2.png'></td>
+  </tr>
+  <tr align="center">
+    <td>회원가입</td>
+    <td>로그인</td>
+    <td>프로필 페이지</td>
+  </tr>
+  <tr>
+    <td><img src='./pictures/회원가입_v2.png'></td>
+    <td><img src='./pictures/로그인_v2.png'></td>
+    <td><img src='./pictures/프로필 페이지_v2.png'></td>
+  </tr>
+  <tr align="center">
+    <td>실시간 채팅 페이지</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><img src='./pictures/실시간 채팅_v2.png'></td>
+    <td><img src=''></td>
+    <td><img src=''></td>
+  </tr>
+  
 </table>
 
 # 프로젝트 회고
